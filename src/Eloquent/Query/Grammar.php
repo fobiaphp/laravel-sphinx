@@ -8,6 +8,7 @@
 
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
+use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Match;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\Query\Expression;
@@ -100,22 +101,47 @@ class Grammar extends BaseGrammar
     protected function compileFacets(BaseBuilder $query, $facets)
     {
         $sql = [];
-        if (is_array($facets)) {
-            foreach ($facets as $row) {
-                $facet = "FACET " . implode(", ", (array)$row['facet']);
-
-                if (!empty($row['order_by'])) {
-                    $facet .= " ORDER BY " .  implode(", ", (array)$row['order_by']);
+        //if (is_array($facets)) {
+        //    foreach ($facets as $facet) {
+        //        $facet = "FACET " . implode(", ", (array)$row['facet']);
+        //
+        //        if (!empty($row['order_by'])) {
+        //            $facet .= " ORDER BY " .  implode(", ", (array)$row['order_by']);
+        //        }
+        //        $sql[] = $facet;
+        //    }
+        //
+        //}
+        //if ($sql) {
+        //    $sql = "\n" .  implode("\n", $sql);
+        //}
+        //return $sql;
+        //
+    
+        $query = '';
+        if (!empty($facets)) {
+            foreach ($facets as $facet) {
+                if (!$facet instanceof Facet) {
+                    throw new \Exception("Not Facet");
                 }
-                $sql[] = $facet;
+                // dynamically set the own SphinxQL connection if the Facet doesn't own one
+                if ($facet->getConnection() === null) {
+                    $facet->setConnection($this->getConnection());
+                    $sql[] = $facet->getFacet();
+                    // go back to the status quo for reuse
+                    $facet->setConnection();
+                } else {
+                    $sql[] = $facet->getFacet();
+                }
+                //$facet = "FACET " .
             }
-
+        
+            $query .= "\n" . implode("\n", $sql);
         }
+        
+        return $query;
+        
 
-        if ($sql) {
-            $sql = "\n" .  implode("\n", $sql);
-        }
-        return $sql;
     }
 
     /**
@@ -188,7 +214,7 @@ class Grammar extends BaseGrammar
             foreach ($matchs as $match) {
                 $pre = '';
                 if ($match['column'] instanceof \Closure) {
-                    $sub = new Match($connection);
+                    $sub = new Match($sphinxQL);
                     call_user_func($match['column'], $sub);
                     $pre .= $sub->compile()->getCompiled();
                 } elseif ($match['column'] instanceof Match) {
@@ -282,8 +308,14 @@ class Grammar extends BaseGrammar
         if (preg_match('/^\[[\d, ]+\]$/', $value)) {
             return "(" . substr($value, 1, -1) . ")";
         }
+    
+        return \DB::connection('sphinx')->getPdo()->quote($value);
+    
+        $value = str_replace('\\', '\\\\', $value);
+        return '\''.str_replace('\'', '\\\'', $value).'\'';
         
-        return parent::wrapValue($value);
+        //return parent::wrapValue($value);
+        
         //return Sphinx::getConnection()->getPdo()->quote($value);
     }
 

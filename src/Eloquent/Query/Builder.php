@@ -8,6 +8,7 @@
 
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
+use Foolz\SphinxQL\Facet;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -184,10 +185,14 @@ class Builder extends QueryBuilder
      * @param string $column    The column to group by
      * @param string $direction The group by direction (asc/desc)
      *
-     * @return SphinxQL
+     * @return self
      */
     public function withinGroupOrderBy($column, $direction = 'ASC')
     {
+        $direction = mb_strtoupper($direction);
+        if ($direction != 'ASC' && $direction != 'DESC') {
+            throw new \RuntimeException("Undefined direction group (asc/desc) - " . $direction);
+        }
         $this->grouporders[$column] = $direction;
         return $this;
     }
@@ -228,11 +233,13 @@ class Builder extends QueryBuilder
      * Allows passing an array with the key as column and value as value
      * Used in: INSERT, REPLACE, UPDATE
      *
-     * @param \Closure $facet
+     * @param \Closure $callback
      * @return self
      */
-    public function facet(\Closure $facet)
+    public function facet(\Closure $callback)
     {
+        $facet = Facet::create($this->getConnection()->getSphinxQLDriversConnection());
+        $callback($facet);
         $this->facets[] = $facet;
         
         return $this;
