@@ -169,6 +169,16 @@ class Model extends \Illuminate\Database\Eloquent\Model
         }
         return [];
     }
+    
+    protected function asMva($value)
+    {
+        if (is_string($value)) {
+            $value = preg_replace_sub('/[\(\)\s]/', $value);
+            $value = explode(',', $value);
+            $value = array_map('intval', $value);
+        }
+        return $value;
+    }
 
     /*
      * ===================
@@ -201,7 +211,21 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
         return self::$tableFields[$class];
     }
-
+    
+    
+    protected function castAttribute($key, $value)
+    {
+        if (is_null($value)) {
+            return $value;
+        }
+        
+        switch ($this->getCastType($key)) {
+            case 'mva':
+                return $this->asMva($value);
+            default:
+                return parent::castAttribute($key, $value);
+        }
+    }
 
     /*
      * ===================
