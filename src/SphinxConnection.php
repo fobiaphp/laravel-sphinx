@@ -8,6 +8,7 @@
 
 namespace Fobia\Database\SphinxConnection;
 
+use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\MySqlConnection;
 
@@ -50,5 +51,13 @@ class SphinxConnection extends MySqlConnection
     public function createSphinxQL()
     {
         return SphinxQL::create($this->getSphinxQLDriversConnection());
+    }
+    
+    /**
+     * @return \Foolz\SphinxQL\Facet
+     */
+    public function createFacet()
+    {
+        return Facet::create($this->getSphinxQLDriversConnection());
     }
 }

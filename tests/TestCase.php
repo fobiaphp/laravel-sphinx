@@ -16,15 +16,6 @@ abstract class TestCase extends Orchestra
         $this->setUpDatabase($this->app);
     }
     
-    //public function tearDown()
-    //{
-    //    $db = \DB::connection('sphinx');
-    //    $db->flushQueryLog();
-    //    $db->disconnect();
-    //
-    //    parent::tearDown();
-    //}
-    
     /**
      * @param \Illuminate\Foundation\Application $app
      *
