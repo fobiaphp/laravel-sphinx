@@ -174,7 +174,7 @@ class Builder extends QueryBuilder
      * @param string   $value  The value
      * @param boolean  $half  Exclude ", |, - control characters from being escaped
      *
-     * @return SphinxQL
+     * @return self
      */
     public function match($column, $value = null, $half = false)
     {
@@ -187,57 +187,29 @@ class Builder extends QueryBuilder
         return $this;
     }
     
-    public function matchRaw($value)
-    {
-        $this->match[] = $value;
-    }
-    
-    
     public function matchQl(\Closure $callback)
     {
-        $match = \Foolz\SphinxQL\Match::create($this->getConnection()->getSphinxQLDriversConnection());
+        $match = \Foolz\SphinxQL\Match::create($this->getConnection()->createSphinxQL());
         $callback($match);
         
-        $this->match[] = $match->compile()->getCompiled();
+        $this->match($match->compile()->getCompiled());
         
         return $this;
     }
     
     
     /**
-     * Escapes the query for the MATCH() function
-     * Allows some of the control characters to pass through for use with a search field: -, |, "
-     * It also does some tricks to wrap/unwrap within " the string and prevents errors
+     * Allows passing an array with the key as column and value as value
+     * Used in: INSERT, REPLACE, UPDATE
      *
-     * @param string $string The string to escape for the MATCH
-     *
-     * @return string The escaped string
+     * @param \Closure $facet
+     * @return self
      */
-    public function halfEscapeMatch($string)
+    public function facet(\Closure $facet)
     {
-        if ($string instanceof Expression) {
-            return $string->value();
-        }
+        $this->facets[] = $facet;
         
-        $string = str_replace(array_keys($this->escape_half_chars), array_values($this->escape_half_chars), $string);
-        
-        // this manages to lower the error rate by a lot
-        if (mb_substr_count($string, '"', 'utf8') % 2 !== 0) {
-            $string .= '"';
-        }
-        
-        $string = preg_replace('/-[\s-]*-/u', '-', $string);
-        
-        $from_to_preg = array(
-            '/([-|])\s*$/u'        => '\\\\\1',
-            '/\|[\s|]*\|/u'        => '|',
-            '/(\S+)-(\S+)/u'       => '\1\-\2',
-            '/(\S+)\s+-\s+(\S+)/u' => '\1 \- \2',
-        );
-        
-        $string = mb_strtolower(preg_replace(array_keys($from_to_preg), array_values($from_to_preg), $string), 'utf8');
-        
-        return $string;
+        return $this;
     }
     
     

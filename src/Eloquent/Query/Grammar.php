@@ -8,6 +8,7 @@
 
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
+use Foolz\SphinxQL\Match;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
@@ -159,9 +160,9 @@ class Grammar extends BaseGrammar
     protected function compileFrom(BaseBuilder $query, $table)
     {
         if (is_array($table)) {
-            return 'from ' . implode(", ", $table);
+            return 'FROM ' . implode(", ", $table);
         }
-        return 'from ' . $this->wrapTable($table);
+        return 'FROM ' . $this->wrapTable($table);
     }
 
     //public function compileMatch(BaseBuilder $query, $match)
@@ -174,13 +175,51 @@ class Grammar extends BaseGrammar
      * Compiles the MATCH part of the queries
      * Used by: SELECT, DELETE, UPDATE
      *
-     * @param BaseBuilder $queryBuilder
+     * @param Builder $queryBuilder
      * @param array $matchs
      * @return string The compiled MATCH
      */
-    public function compileMatch(BaseBuilder $queryBuilder, $matchs)
+    public function compileMatch(Builder $queryBuilder, $matchs)
     {
-        return print_r($matchs, true);
+        $connection = $queryBuilder->getConnection()->getSphinxQLDriversConnection();
+        $sphinxQL = SphinxQL::create($connection);
+        $query = '';
+        
+        if (!empty($matchs)) {
+            $query .= 'WHERE MATCH(';
+        
+            $matched = array();
+        
+            foreach ($matchs as $match) {
+                $pre = '';
+                if ($match['column'] instanceof \Closure) {
+                    $sub = new Match($connection);
+                    call_user_func($match['column'], $sub);
+                    $pre .= $sub->compile()->getCompiled();
+                } elseif ($match['column'] instanceof Match) {
+                    $pre .= $match['column']->compile()->getCompiled();
+                } elseif (empty($match['column'])) {
+                    $pre .= '';
+                } elseif (is_array($match['column'])) {
+                    $pre .= '@('.implode(',', $match['column']).') ';
+                } else {
+                    $pre .= '@'.$match['column'].' ';
+                }
+            
+                if ($match['half']) {
+                    $pre .= $sphinxQL->halfEscapeMatch($match['value']);
+                } else {
+                    $pre .= $sphinxQL->escapeMatch($match['value']);
+                }
+            
+                $matched[] = '('.$pre.')';
+            }
+        
+            $matched = implode(' ', $matched);
+            $query .= $sphinxQL->getConnection()->escape(trim($matched)).') ';
+        }
+        
+        return $query;
     }
     
 
