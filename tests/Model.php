@@ -1,18 +1,18 @@
 <?php
 /**
- * SphinxInstitutionAddress.php file
+ * Model.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
  */
 
-namespace Fobia\Database\SphinxConnection\Test\Model;
+namespace Fobia\Database\SphinxConnection\Test;
 
-use Fobia\Database\SphinxConnection\Eloquent\Model;
+use Fobia\Database\SphinxConnection\Eloquent\Model as BaseModel;
 
 
 /**
- * Class ModelSphinxInstitutionAddress
+ * Class Model
  *
  * @property integer $id                Institution address_id
  * @property string $name               Institution name
@@ -20,10 +20,10 @@ use Fobia\Database\SphinxConnection\Eloquent\Model;
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
  */
-class ModelSphinxInstitutionAddress extends Model
+class Model extends BaseModel
 {
 
-    protected $table = 'institution_address';
+    protected $table = 'products';
 
     protected $fillable = [];
 

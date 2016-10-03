@@ -130,14 +130,40 @@ class Builder extends QueryBuilder
         return $this->connection->update($sql, $this->cleanBindings($bindings));
     }
     
+    
+    
     /**
      * OPTION clause (SphinxQL-specific)
      * Used by: SELECT
      *
+     * Опции запроса [OPTION opt_name = opt_value [, ...]]
+     * Повторынй вызов добавит параметр.
+     *
+     * Example:
+     *      $model->option('field_weights', 'title=10']); // options as string
+     *      $model->option('field_weights', ['title' => 10, 'body' => 3]);  // options as array
+     *      $model->option('index_weights', ['products_rt' => 10, 'body' => 1]);
+     *      $model->option('ranker', 'bm25');
+     *      $model->option('comment', 'my comment query');
+     *
+     *
+     * OPTION:
+     * 'agent_query_timeout', - integer (max time in milliseconds to wait for remote queries to complete, see agent_query_timeout under Index configuration options for details)
+     * 'boolean_simplify' - 0 or 1, enables simplifying the query to speed it up
+     * 'comment', - string, user comment that gets copied to a query log file
+     * 'cutoff', - integer (max found matches threshold)
+     * 'ranker' = bm25,
+     * 'max_matches' = 3000,
+     * 'agent_query_timeout' = 10000,
+     * 'max_matches' = 1000,  - (default) - integer (per-query max matches value)
+     * 'field_weights'= (title=10, body=3), -    a named integer list (per-field user weights for ranking)
+     * 'index_weights' = (products_rt=10, body=3),    - a named integer list (per-index user weights for ranking)
+     *
+     *
      * @param string $name  Option name
      * @param string $value Option value
      *
-     * @return SphinxQL
+     * @return self
      */
     public function options($name, $value)
     {
@@ -212,6 +238,31 @@ class Builder extends QueryBuilder
         return $this;
     }
     
+    
+    
+    /**
+     * Масив преобразуется в список целых числе, null и пустые строки игнорятся
+     *
+     * Example:
+     *     filterParamsUint([1,2,null,4])  => [1,2,3]
+     *     filterParamsUint([1,[2,[null,4]]])  => [1,2,3]
+     *
+     * @param $args
+     * @return array|bool
+     */
+    protected function filterParamsUint($args)
+    {
+        
+        $args = array_flatten((array) $args);
+        $args = array_filter((array) $args, function ($v) {
+            return (($v !== null) && ($v !== ''));
+        });
+        if (!count($args)) {
+            return false;
+        }
+        $ids = array_map('intval', $args);
+        return array_unique(array_values($ids));
+    }
     
     /*
      * ===================

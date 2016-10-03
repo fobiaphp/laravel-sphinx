@@ -136,7 +136,7 @@ class Grammar extends BaseGrammar
             $offset = $query->offset;
         }
 
-        return 'limit ' . ((int)$offset) . ', ' . ((int)$limit);
+        return 'LIMIT ' . ((int)$offset) . ', ' . ((int)$limit);
     }
 
     /**
@@ -165,11 +165,6 @@ class Grammar extends BaseGrammar
         return 'FROM ' . $this->wrapTable($table);
     }
 
-    //public function compileMatch(BaseBuilder $query, $match)
-    //{
-    //    $match = $sphinxQl->compileMatch();
-    //    return $match;
-    //}
     
     /**
      * Compiles the MATCH part of the queries
@@ -287,8 +282,9 @@ class Grammar extends BaseGrammar
         if (preg_match('/^\[[\d, ]+\]$/', $value)) {
             return "(" . substr($value, 1, -1) . ")";
         }
-
-        return Sphinx::getConnection()->getPdo()->quote($value);
+        
+        return parent::wrapValue($value);
+        //return Sphinx::getConnection()->getPdo()->quote($value);
     }
 
     public function parameter($value)
