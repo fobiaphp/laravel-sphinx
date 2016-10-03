@@ -35,7 +35,7 @@ class Builder extends QueryBuilder
     public $grouporders;
     public $options;
     public $facets;
-    public $whereMatch;
+    public $match;
 
     /**
      * Get the SQL representation of the query.
@@ -129,5 +129,130 @@ class Builder extends QueryBuilder
         $sql = $this->grammar->compileUpdate($this, $values);
         return $this->connection->update($sql, $this->cleanBindings($bindings));
     }
-
+    
+    /**
+     * OPTION clause (SphinxQL-specific)
+     * Used by: SELECT
+     *
+     * @param string $name  Option name
+     * @param string $value Option value
+     *
+     * @return SphinxQL
+     */
+    public function options($name, $value)
+    {
+        $this->options[] = [$name, $value];
+        // если передать $model->options(null, null), произойдет чистка
+        if ($name === null && $value === null) {
+            $this->options = [];
+        }
+        return $this;
+    }
+    
+    
+    /**
+     * WITHIN GROUP ORDER BY clause (SphinxQL-specific)
+     * Adds to the previously added columns
+     * Works just like a classic ORDER BY
+     *
+     * @param string $column    The column to group by
+     * @param string $direction The group by direction (asc/desc)
+     *
+     * @return SphinxQL
+     */
+    public function withinGroupOrderBy($column, $direction = 'ASC')
+    {
+        $this->grouporders[$column] = $direction;
+        return $this;
+    }
+    
+    
+    /**
+     * MATCH clause (Sphinx-specific)
+     *
+     * @param mixed    $column The column name (can be array, string, Closure, or Match)
+     * @param string   $value  The value
+     * @param boolean  $half  Exclude ", |, - control characters from being escaped
+     *
+     * @return SphinxQL
+     */
+    public function match($column, $value = null, $half = false)
+    {
+        if ($column === '*' || (is_array($column) && in_array('*', $column))) {
+            $column = array();
+        }
+        
+        $this->match[] = array('column' => $column, 'value' => $value, 'half' => $half);
+        
+        return $this;
+    }
+    
+    public function matchRaw($value)
+    {
+        $this->match[] = $value;
+    }
+    
+    
+    public function matchQl(\Closure $callback)
+    {
+        $match = \Foolz\SphinxQL\Match::create($this->getConnection()->getSphinxQLDriversConnection());
+        $callback($match);
+        
+        $this->match[] = $match->compile()->getCompiled();
+        
+        return $this;
+    }
+    
+    
+    /**
+     * Escapes the query for the MATCH() function
+     * Allows some of the control characters to pass through for use with a search field: -, |, "
+     * It also does some tricks to wrap/unwrap within " the string and prevents errors
+     *
+     * @param string $string The string to escape for the MATCH
+     *
+     * @return string The escaped string
+     */
+    public function halfEscapeMatch($string)
+    {
+        if ($string instanceof Expression) {
+            return $string->value();
+        }
+        
+        $string = str_replace(array_keys($this->escape_half_chars), array_values($this->escape_half_chars), $string);
+        
+        // this manages to lower the error rate by a lot
+        if (mb_substr_count($string, '"', 'utf8') % 2 !== 0) {
+            $string .= '"';
+        }
+        
+        $string = preg_replace('/-[\s-]*-/u', '-', $string);
+        
+        $from_to_preg = array(
+            '/([-|])\s*$/u'        => '\\\\\1',
+            '/\|[\s|]*\|/u'        => '|',
+            '/(\S+)-(\S+)/u'       => '\1\-\2',
+            '/(\S+)\s+-\s+(\S+)/u' => '\1 \- \2',
+        );
+        
+        $string = mb_strtolower(preg_replace(array_keys($from_to_preg), array_values($from_to_preg), $string), 'utf8');
+        
+        return $string;
+    }
+    
+    
+    /*
+     * ===================
+     * Override methods
+     * ===================
+     */
+    
+    /**
+     * @return \Fobia\Database\SphinxConnection\SphinxConnection
+     */
+    public function getConnection()
+    {
+        return parent::getConnection();
+    }
+    
 }

@@ -8,7 +8,6 @@
 
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
-use App\Lib\Database\Sphinx\Sphinx;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
@@ -26,7 +25,7 @@ class Grammar extends BaseGrammar
         'aggregate',
         'columns',
         'from',
-        'whereMatch',
+        'match',
         'wheres',
         'groups',
         'grouporders',
@@ -165,17 +164,31 @@ class Grammar extends BaseGrammar
         return 'from ' . $this->wrapTable($table);
     }
 
-    public function compileWhereMatch(BaseBuilder $query, $sphinxQl)
+    //public function compileMatch(BaseBuilder $query, $match)
+    //{
+    //    $match = $sphinxQl->compileMatch();
+    //    return $match;
+    //}
+    
+    /**
+     * Compiles the MATCH part of the queries
+     * Used by: SELECT, DELETE, UPDATE
+     *
+     * @param BaseBuilder $queryBuilder
+     * @param array $matchs
+     * @return string The compiled MATCH
+     */
+    public function compileMatch(BaseBuilder $queryBuilder, $matchs)
     {
-        $match = $sphinxQl->compileMatch();
-        return $match;
+        return print_r($matchs, true);
     }
+    
 
     public function compileWheres(BaseBuilder $query)
     {
         $where =  parent::compileWheres($query);
         // If SphinxQL generator
-        if (!empty($query->whereMatch)) {
+        if (!empty($query->match)) {
             $where = ' AND ' . substr($where, 5);
         }
         return $where;

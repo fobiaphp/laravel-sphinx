@@ -27,7 +27,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Fobia\\Database\\SphinxConnection\\Test\\": "tests"
+            "Fobia\\Database\\SphinxConnection\\Test\\": "tests/"
         }
     }
 }
