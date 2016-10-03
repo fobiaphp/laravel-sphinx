@@ -1,0 +1,33 @@
+{
+    "name": "fobiaphp/laravel-sphinx",
+    "description": "The Laravel Framework Sphinx connection.",
+    "keywords": ["laravel", "sphinx"],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=5.5.9",
+        "foolz/sphinxql-query-builder": "^1.0",
+        "illuminate/bus": "~5.1.16|~5.2.0|~5.3.0",
+        "illuminate/console": "~5.1.16|~5.2.0|~5.3.0",
+        "illuminate/database": "~5.1.16|~5.2.0|~5.3.0",
+        "illuminate/support": "~5.1.16|~5.2.0|~5.3.0"
+    },
+    "require-dev": {
+        "symfony/filesystem": "^3.0",
+        "phpunit/phpunit" : "^5.0.0",
+        "mockery/mockery": "^0.9.4",
+        "scrutinizer/ocular": "^1.1",
+        "orchestra/testbench": "^3.1",
+        "doctrine/dbal": "^2.5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fobia\\Database\\SphinxConnection\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fobia\\Database\\SphinxConnection\\Test\\": "tests"
+        }
+    }
+}
