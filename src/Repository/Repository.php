@@ -8,14 +8,12 @@
 
 namespace Fobia\Database\SphinxConnection;
 
-use App\Lib\Database\Sphinx\Eloquent\Model;
-use App\Repository\Eloquent\Repository as BaseRepository;
-use Config;
+use Illuminate\Support\Facades\Config;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class Repository
  *
- * @package    App\Lib\Database\Sphinx\Repository
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
  */
@@ -26,7 +24,8 @@ abstract class Repository extends BaseRepository
     public function __construct(\Illuminate\Container\Container $app, \Illuminate\Support\Collection $collection)
     {
         parent::__construct($app, $collection);
-        if(Config::has('paginator.default_count_per_page')) {
+        
+        if (Config::has('paginator.default_count_per_page')) {
             $this->perPage = Config::get('paginator.default_count_per_page');
         }
     }
@@ -34,7 +33,8 @@ abstract class Repository extends BaseRepository
     /**
      * @inheritdoc
      */
-    public function paginate($perPage = null, $columns = ['*']) {
+    public function paginate($perPage = null, $columns = ['*'])
+    {
         if ($perPage === null) {
             $perPage = $this->perPage;
         }
