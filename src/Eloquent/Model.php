@@ -16,8 +16,8 @@ use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar as QueryGrammar;
  * App\Lib\Database\Eloquent\Model
  *
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder match($column, $value = null, $half = false)   Созвучный поиск.
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder withinGroupOrderBy($name, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMulti($name, $operator, $values) равенство в список.
+ * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder withinGroupOrderBy($column, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
+ * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMulti($column, $operator, $values) равенство в список.
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder options($name, $value) Опции запроса [OPTION].
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facat($callback) Конструкция запроса [FACAT].
  *

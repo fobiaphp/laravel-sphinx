@@ -53,4 +53,14 @@ class SphinxConnectionTest extends TestCase
         $this->assertTrue($sphinxQl1 === $sphinxQl2);
     }
 
+
+    public function test_getSphinxQLHelper()
+    {
+        $helper = $this->db->getSphinxQLHelper();
+
+        $meta = $helper->showMeta();
+        //
+        //dump($meta->execute()->fetchAllAssoc());
+    }
+
 }

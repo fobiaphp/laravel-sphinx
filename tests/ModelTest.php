@@ -245,4 +245,32 @@ class ModelTest extends TestCase
 
         $this->assertQuery("select * FROM products where id  > 1  FACET name FACET id", $q);
     }
+
+
+    public function test_whereMulti_eq()
+    {
+        $q = Model::whereMulti('tags', '=', 1, 2, 3, '', [5, 6, 7], null);
+        $this->assertQuery("SELECT * FROM products WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7", $q);
+    }
+
+    public function test_whereMulti_eq2()
+    {
+        $q = Model::whereMulti('id', '=', 1);
+        $this->assertQuery("SELECT * FROM products WHERE id = 1", $q);
+
+        $q = Model::whereMulti('id', '=', '', null, 1);
+        $this->assertQuery("SELECT * FROM products WHERE id = 1", $q);
+
+        $q = Model::whereMulti('id', '=', []);
+        $this->assertQuery("SELECT * FROM products", $q);
+
+        $q = Model::whereMulti('id', '=', '');
+        $this->assertQuery("SELECT * FROM products", $q);
+    }
+
+    public function test_whereMulti_in()
+    {
+        $q = Model::whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12]);
+        $this->assertQuery("SELECT * FROM products WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)", $q);
+    }
 }

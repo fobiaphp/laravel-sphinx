@@ -133,6 +133,51 @@ class Builder extends QueryBuilder
 
 
     /**
+     * Проверка списков MVA либо множественая проверка всех перечисленых значений
+     *
+     * Example:
+     *     $model->whereMulti('tags', 1, 2, 3, '', [5, 6, 7], null)
+     *     // .. WHERE tags = 1 AND tags = 2 tags = 3 tags = 5 tags = 6 tags = 7
+     *
+     *     $model->whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12])
+     *     // .. WHERE tags in(1) AND tags in(2) AND tags in(3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)
+     *
+     * @param string $column
+     * @param string $operator
+     * @param mixed|array $values
+     * @return mixed
+     */
+    public function whereMulti($column, $operator = null, $values = null)
+    {
+        if (is_string($operator) && in_array(strtolower($operator), ['in', 'not in', '=', '<', '>', '<=', '>=', '<>', '!='])) {
+            //$values = array_slice(func_get_args(), 3);
+        } else {
+            throw new \RuntimeException("Not defened operator");
+        }
+
+        $operator = strtolower($operator);
+        if ($operator !== 'in' && $operator !== 'not in' ) {
+            $ids = array_slice(func_get_args(), 2);
+            $ids = $this->filterParamsUint($ids);
+        } else {
+            $ids = array_merge((array) $values, array_slice(func_get_args(), 3));
+        }
+
+        if ($ids) {
+            foreach ($ids as $id) {
+                if ($operator == 'in') {
+                    $this->whereIn($column, (array) $id);
+                } elseif($operator == 'not in') {
+                    $this->whereNotIn($column, (array) $id);
+                } else {
+                    $this->where($column, $operator, $id);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
      * OPTION clause (SphinxQL-specific)
      * Used by: SELECT
      *
@@ -257,7 +302,6 @@ class Builder extends QueryBuilder
      */
     protected function filterParamsUint($args)
     {
-
         $args = array_flatten((array) $args);
         $args = array_filter((array) $args, function ($v) {
             return (($v !== null) && ($v !== ''));

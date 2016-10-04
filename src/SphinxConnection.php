@@ -9,6 +9,7 @@
 namespace Fobia\Database\SphinxConnection;
 
 use Foolz\SphinxQL\Facet;
+use Foolz\SphinxQL\Helper;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\MySqlConnection;
 
@@ -43,6 +44,14 @@ class SphinxConnection extends MySqlConnection
             $this->sphinxQLConnection = new SphinxQLDriversConnection($this->getPdo());
         }
         return $this->sphinxQLConnection;
+    }
+
+    /**
+     * @return \Foolz\SphinxQL\Helper
+     */
+    public function getSphinxQLHelper()
+    {
+        return Helper::create($this->getSphinxQLDriversConnection());
     }
 
     /**
