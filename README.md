@@ -1,5 +1,7 @@
 # Sphinx
 
+[![Build Status](https://travis-ci.org/fobiaphp/laravel-sphinx.svg?branch=master)](https://travis-ci.org/fobiaphp/laravel-sphinx)
+
 Laravel Sphinx Database connector for Eloquent
 
 

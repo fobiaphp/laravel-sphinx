@@ -175,17 +175,17 @@ class ModelTest extends TestCase
         $q = Model::insert([
             'id' => '999999',
             'name' => '\\\\\\\'name',
-            'itype' => 1,
+            'menu_id' => 1,
         ]);
         $this->assertTrue($q);
 
         $q = Model::where('id', $id)->update([
-            'itype' => '2',
+            'menu_id' => '2',
         ]);
         $this->assertEquals(1, $q);
 
         $q = Model::where('id', $id)->update([
-            'itype' => 3,
+            'menu_id' => 3,
         ]);
         $this->assertEquals(1, $q);
 
@@ -311,6 +311,12 @@ class ModelTest extends TestCase
 
     public function test_cast_model()
     {
+        Model::insert([
+            'id' => '999999',
+            'name' => 'new name',
+            'tags' => $this->db->raw('(1,2,3,4)'),
+        ]);
+
         $model = Model::whereMulti('tags', 'in', [1, 2, 3])->first();
         if (!$model) {
             $this->markTestSkipped('not found test row');
@@ -318,6 +324,8 @@ class ModelTest extends TestCase
         }
 
         $this->assertArrayHasKey(0, $model->tags);
+
+        Model::where('id', '999999')->delete();
     }
 
     public function test_cast()
