@@ -11,6 +11,7 @@ namespace Fobia\Database\SphinxConnection\Test;
 
 use Fobia\Database\SphinxConnection\SphinxConnection;
 use Fobia\Database\SphinxConnection\SphinxQLDriversConnection;
+use Foolz\SphinxQL\Helper;
 use Illuminate\Database\Connection;
 
 class SphinxConnectionTest extends TestCase
@@ -57,10 +58,7 @@ class SphinxConnectionTest extends TestCase
     public function test_getSphinxQLHelper()
     {
         $helper = $this->db->getSphinxQLHelper();
-
-        $meta = $helper->showMeta();
-        //
-        //dump($meta->execute()->fetchAllAssoc());
+        $this->assertInstanceOf(Helper::class, $helper);
     }
 
 }

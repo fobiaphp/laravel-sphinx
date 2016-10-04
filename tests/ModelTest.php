@@ -21,7 +21,7 @@ class ModelTest extends TestCase
     protected $db;
 
     // Logger
-    protected $traceLog = true;
+    protected $traceLog = null;
 
     public function toggleTraceLog($toggle = null)
     {
@@ -78,6 +78,10 @@ class ModelTest extends TestCase
 
     public function setUp()
     {
+        if ($this->traceLog === null) {
+            $this->traceLog = (bool) $_ENV['TRACE_QUERY_LOG'];
+        }
+
         parent::setUp();
 
         if ($this->db === null) {
@@ -220,7 +224,7 @@ class ModelTest extends TestCase
     public function test_where()
     {
         $q = Model::where('id', 999999);
-        dump($q->toSql());
+        $this->assertQuery("select * FROM products WHERE id = 999999", $q);
     }
 
 

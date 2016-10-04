@@ -19,5 +19,24 @@ use Illuminate\Database\Connectors\MySqlConnector;
  */
 class SphinxConnector extends MySqlConnector
 {
+    /**
+     * @internal
+     */
+    public function connect(array $config)
+    {
+        $defaultConfig = [
+            'host' => '127.0.0.1',
+            'port' => 9306,
+            'database' => null,
+            'username' => '',
+            // 'password' => '',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'collation' => null,
+        ];
 
+        $config = array_merge($defaultConfig, $config);
+
+        return parent::connect($config);
+    }
 }

@@ -31,12 +31,7 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
-
-        <env name="UNITTEST_TOCKEN" value="1"/>
-        <env name="UNITTEST_USER_EMAIL" value="test1@test.ru"/>
-        <env name="UNITTEST_USER_PASSWORD" value="test1231"/>
-
-        <env name="REDIS_DATABASE" value="5"/>
+        <env name="TRACE_QUERY_LOG" value="false"/>
     </php>
 
 
