@@ -104,7 +104,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     protected function asMva($value)
     {
         if (is_string($value)) {
-            $value = preg_replace_sub('/[\(\)\s]/', $value);
+            $value = preg_replace('/[\(\)\s]/', '', $value);
             $value = explode(',', $value);
             $value = array_map('intval', $value);
         }

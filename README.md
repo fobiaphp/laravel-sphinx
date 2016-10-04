@@ -37,15 +37,16 @@ SELECT
 В файле `database.php` секции  `connections`  нужно дописать
 
         'sphinx' => [
-            'driver'   => 'mysql',
+            'driver'   => 'sphinx',
             'host'     => env('SPHINX_HOST', env('DB_HOST','127.0.0.1')),
             'port' => 9306,
-
-            'database' => null, // 'SphinxRT',
-            'username' => '',
-            // 'password' => '',
-
-            'charset'  => 'utf8',
-            'prefix'   => '',
-            'collation' => null,
         ],
+
+
+
+```php
+class ProductModel extends \Fobia\Database\SphinxConnection\Eloquent
+{
+    protected $table = 'products';
+}
+```

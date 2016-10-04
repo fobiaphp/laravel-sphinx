@@ -29,14 +29,7 @@ class Model extends BaseModel
 
     protected $guarded = ['*'];
 
-    protected $appends = [
-        'address_id',
-        'open_through',
-        'image_url',
-        'image_small',
-        'dictionary_kitchens',
-        'dummy_image',
-    ];
+    protected $appends = [ ];
 
     /**
      * The attributes that should be casted to native types.
@@ -44,10 +37,7 @@ class Model extends BaseModel
      * @var array
      */
     protected $casts = [
-        'schedules' => 'json',
-        //'tags' => 'array',
-        //'criterions' => 'array',
-        //'kitchens' => 'array',
+        'tags' => 'mva',
         'factors' => 'json',
     ];
 }

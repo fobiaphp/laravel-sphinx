@@ -308,4 +308,28 @@ class ModelTest extends TestCase
         $this->assertQuery("SELECT * FROM products WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)",
             $q);
     }
+
+    public function test_cast_model()
+    {
+        $model = Model::whereMulti('tags', 'in', [1, 2, 3])->first();
+        if (!$model) {
+            $this->markTestSkipped('not found test row');
+            return;
+        }
+
+        $this->assertArrayHasKey(0, $model->tags);
+    }
+
+    public function test_cast()
+    {
+        $model = new Model();
+        $model->tags = [1, 2, 3];
+        $this->assertEquals([1, 2, 3], $model->tags);
+
+        $model->tags = '1, 2, 3';
+        $this->assertEquals([1, 2, 3], $model->tags);
+
+        $model->tags = '(1,2,3)';
+        $this->assertEquals([1, 2, 3], $model->tags);
+    }
 }
