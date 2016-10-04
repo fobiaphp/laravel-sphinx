@@ -67,9 +67,9 @@ class ModelTest extends TestCase
         // $actualQuery = preg_replace('/\s+/', ' ', $actualQuery);
 
         $expectedQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
-            [' ', ', ', ' ', ' = '], $expectedQuery);
+            [' ', ', ', ' ', ' = ', ''], $expectedQuery);
         $actualQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
-            [' ', ', ', ' ', ' = '], $actualQuery);
+            [' ', ', ', ' ', ' = ', ''], $actualQuery);
 
         $this->assertEquals($expectedQuery, $actualQuery);
     }
@@ -263,7 +263,7 @@ class ModelTest extends TestCase
             $m->phrase('phrase');
         });
 
-        $this->assertQuery("select * FROM products WHERE MATCH('(@@name \\\"phrase\\\" )') AND  id = 999999", $q);
+        $this->assertQuery("select * FROM products WHERE MATCH('(@name \\\"phrase\\\" )') AND  id = 999999", $q);
     }
 
     public function test_facet()
