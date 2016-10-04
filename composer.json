@@ -1,7 +1,7 @@
 {
-    "name": "fobiaphp/laravel-sphinx",
+    "name": "fobia/laravel-sphinx",
     "description": "The Laravel Framework Sphinx connection.",
-    "keywords": ["laravel", "sphinx"],
+    "keywords": ["laravel", "sphinx", "Sphinx Eloquent"],
     "license": "MIT",
     "type": "project",
     "require": {
