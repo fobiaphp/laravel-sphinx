@@ -71,8 +71,8 @@ class Grammar extends BaseGrammar
                 if ($opt == 'field_weights' || $opt == 'index_weights') {
                     $weights = [];
                     if (is_array($opt_val)) {
-                        foreach($opt_val as $k=>$v) {
-                            $weights[] = "{$k} = " . (int)$v;
+                        foreach ($opt_val as $k => $v) {
+                            $weights[] = "{$k} = " . (int) $v;
                         }
                     } else {
                         $weights[] = preg_replace("/\(|\)/", "", $opt_val);
@@ -96,28 +96,12 @@ class Grammar extends BaseGrammar
      *
      * @param \Illuminate\Database\Query\Builder $query
      * @param $facets
-     * @return string
+     * @return \Illuminate\Database\Query\Builder|string
+     * @throws \Exception
      */
     protected function compileFacets(BaseBuilder $query, $facets)
     {
         $sql = [];
-        //if (is_array($facets)) {
-        //    foreach ($facets as $facet) {
-        //        $facet = "FACET " . implode(", ", (array)$row['facet']);
-        //
-        //        if (!empty($row['order_by'])) {
-        //            $facet .= " ORDER BY " .  implode(", ", (array)$row['order_by']);
-        //        }
-        //        $sql[] = $facet;
-        //    }
-        //
-        //}
-        //if ($sql) {
-        //    $sql = "\n" .  implode("\n", $sql);
-        //}
-        //return $sql;
-        //
-    
         $query = '';
         if (!empty($facets)) {
             foreach ($facets as $facet) {
@@ -135,13 +119,11 @@ class Grammar extends BaseGrammar
                 }
                 //$facet = "FACET " .
             }
-        
+
             $query .= "\n" . implode("\n", $sql);
         }
-        
-        return $query;
-        
 
+        return $query;
     }
 
     /**
@@ -162,7 +144,7 @@ class Grammar extends BaseGrammar
             $offset = $query->offset;
         }
 
-        return 'LIMIT ' . ((int)$offset) . ', ' . ((int)$limit);
+        return 'LIMIT ' . ((int) $offset) . ', ' . ((int) $limit);
     }
 
     /**
@@ -179,8 +161,8 @@ class Grammar extends BaseGrammar
     /**
      * Compile the "from" portion of the query.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  string  $table
+     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  string $table
      * @return string
      */
     protected function compileFrom(BaseBuilder $query, $table)
@@ -191,7 +173,7 @@ class Grammar extends BaseGrammar
         return 'FROM ' . $this->wrapTable($table);
     }
 
-    
+
     /**
      * Compiles the MATCH part of the queries
      * Used by: SELECT, DELETE, UPDATE
@@ -205,12 +187,12 @@ class Grammar extends BaseGrammar
         $connection = $queryBuilder->getConnection()->getSphinxQLDriversConnection();
         $sphinxQL = SphinxQL::create($connection);
         $query = '';
-        
+
         if (!empty($matchs)) {
             $query .= 'WHERE MATCH(';
-        
+
             $matched = array();
-        
+
             foreach ($matchs as $match) {
                 $pre = '';
                 if ($match['column'] instanceof \Closure) {
@@ -222,31 +204,31 @@ class Grammar extends BaseGrammar
                 } elseif (empty($match['column'])) {
                     $pre .= '';
                 } elseif (is_array($match['column'])) {
-                    $pre .= '@('.implode(',', $match['column']).') ';
+                    $pre .= '@(' . implode(',', $match['column']) . ') ';
                 } else {
-                    $pre .= '@'.$match['column'].' ';
+                    $pre .= '@' . $match['column'] . ' ';
                 }
-            
+
                 if ($match['half']) {
                     $pre .= $sphinxQL->halfEscapeMatch($match['value']);
                 } else {
                     $pre .= $sphinxQL->escapeMatch($match['value']);
                 }
-            
-                $matched[] = '('.$pre.')';
+
+                $matched[] = '(' . $pre . ')';
             }
-        
+
             $matched = implode(' ', $matched);
-            $query .= $sphinxQL->getConnection()->escape(trim($matched)).') ';
+            $query .= $sphinxQL->getConnection()->escape(trim($matched)) . ') ';
         }
-        
+
         return $query;
     }
-    
+
 
     public function compileWheres(BaseBuilder $query)
     {
-        $where =  parent::compileWheres($query);
+        $where = parent::compileWheres($query);
         // If SphinxQL generator
         if (!empty($query->match)) {
             $where = ' AND ' . substr($where, 5);
@@ -308,21 +290,19 @@ class Grammar extends BaseGrammar
         if (preg_match('/^\[[\d, ]+\]$/', $value)) {
             return "(" . substr($value, 1, -1) . ")";
         }
-    
+
         return \DB::connection('sphinx')->getPdo()->quote($value);
-    
+
         $value = str_replace('\\', '\\\\', $value);
-        return '\''.str_replace('\'', '\\\'', $value).'\'';
-        
+        return '\'' . str_replace('\'', '\\\'', $value) . '\'';
+
         //return parent::wrapValue($value);
-        
+
         //return Sphinx::getConnection()->getPdo()->quote($value);
     }
 
     public function parameter($value)
     {
-        return $this->isExpression($value)
-            ? $this->getValue($value)
-            : ((is_numeric($value) || is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
+        return $this->isExpression($value) ? $this->getValue($value) : ((is_numeric($value) || is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
     }
 }

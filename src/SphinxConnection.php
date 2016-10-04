@@ -25,7 +25,7 @@ class SphinxConnection extends MySqlConnection
      * @var \Fobia\Database\SphinxConnection\SphinxQLDriversConnection
      */
     protected $sphinxQLConnection;
-    
+
     /**
      * @inheritDoc
      */
@@ -33,7 +33,7 @@ class SphinxConnection extends MySqlConnection
     {
         parent::__construct($pdo, $database, $tablePrefix, $config);
     }
-    
+
     /**
      * @return \Fobia\Database\SphinxConnection\SphinxQLDriversConnection
      */
@@ -44,7 +44,7 @@ class SphinxConnection extends MySqlConnection
         }
         return $this->sphinxQLConnection;
     }
-    
+
     /**
      * @return \Foolz\SphinxQL\SphinxQL
      */
@@ -52,12 +52,39 @@ class SphinxConnection extends MySqlConnection
     {
         return SphinxQL::create($this->getSphinxQLDriversConnection());
     }
-    
+
     /**
      * @return \Foolz\SphinxQL\Facet
      */
     public function createFacet()
     {
         return Facet::create($this->getSphinxQLDriversConnection());
+    }
+
+
+    /**
+     * Run a select statement against the database.
+     *
+     * @param  string $query
+     * @param  array $bindings
+     * @param  bool $useReadPdo
+     * @return array
+     */
+    public function select($query, $bindings = [], $useReadPdo = true)
+    {
+        return $this->run($query, $bindings, function ($me, $query, $bindings) use ($useReadPdo) {
+            if ($me->pretending()) {
+                return [];
+            }
+
+            // For select statements, we'll simply execute the query and return an array
+            // of the database result set. Each element in the array will be a single
+            // row from the database table, and will either be an array or objects.
+            $statement = $this->getPdoForSelect($useReadPdo)->prepare($query);
+
+            $statement->execute($me->prepareBindings($bindings));
+
+            return $statement->fetchAll($me->getFetchMode());
+        });
     }
 }

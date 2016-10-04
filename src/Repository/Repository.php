@@ -24,7 +24,7 @@ abstract class Repository extends BaseRepository
     public function __construct(\Illuminate\Container\Container $app, \Illuminate\Support\Collection $collection)
     {
         parent::__construct($app, $collection);
-        
+
         if (Config::has('paginator.default_count_per_page')) {
             $this->perPage = Config::get('paginator.default_count_per_page');
         }
@@ -50,7 +50,7 @@ abstract class Repository extends BaseRepository
         $columns = ['*'];
 
         if (!empty($params['limit'])) {
-            $perPage = (int)$params['limit'];
+            $perPage = (int) $params['limit'];
         }
 
         // Paginator property

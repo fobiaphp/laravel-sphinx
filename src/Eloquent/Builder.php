@@ -33,14 +33,13 @@ class Builder extends EloquentBuilder
             'pageName' => $pageName,
         ]);
     }
-    
+
     public function getQuery()
     {
         return parent::getQuery();
     }
 
 
-    
     /**
      * Get the count of the total records for the paginator.
      *
@@ -59,6 +58,6 @@ class Builder extends EloquentBuilder
         // | time          | 0.000 |
         // +---------------+-------+
 
-        return isset($results[1]) ? (int)array_change_key_case((array)$results[1])['value'] : 0;
+        return isset($results[1]) ? (int) array_change_key_case((array) $results[1])['value'] : 0;
     }
 }

@@ -2,20 +2,18 @@
 
 namespace Fobia\Database\SphinxConnection\Test;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Schema\Blueprint;
 use Symfony\Component\Filesystem\Filesystem;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
-    
+
     public function setUp()
     {
         parent::setUp();
         $this->setUpDatabase($this->app);
     }
-    
+
     /**
      * @param \Illuminate\Foundation\Application $app
      *
@@ -24,17 +22,17 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            \Fobia\Database\SphinxConnection\SphinxServiceProvider::class
+            \Fobia\Database\SphinxConnection\SphinxServiceProvider::class,
         ];
     }
-    
+
     /**
      * @param \Illuminate\Foundation\Application $app
      */
     protected function getEnvironmentSetUp($app)
     {
         $this->initializeDirectory($this->getTempDirectory());
-        
+
         $app['config']->set('database.default', 'sphinx');
         $app['config']->set('database.connections.sphinx', [
             'driver' => 'sphinx',
@@ -47,14 +45,14 @@ abstract class TestCase extends Orchestra
             'prefix' => '',
             'collation' => null,
         ]);
-        
+
         $app->bind('path.public', function () {
             return $this->getTempDirectory();
         });
-        
+
         $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
     }
-    
+
     /**
      * @param \Illuminate\Foundation\Application $app
      */
@@ -62,7 +60,7 @@ abstract class TestCase extends Orchestra
     {
 
     }
-    
+
     protected function initializeDirectory($directory)
     {
         $fs = new Filesystem();
@@ -71,7 +69,7 @@ abstract class TestCase extends Orchestra
         }
         $fs->mkdir($directory);
     }
-    
+
     public function getTempDirectory($suffix = '')
     {
         return dirname(__FILE__) . '/temp' . ($suffix == '' ? '' : '/' . $suffix);

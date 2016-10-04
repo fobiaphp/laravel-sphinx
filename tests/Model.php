@@ -29,7 +29,14 @@ class Model extends BaseModel
 
     protected $guarded = ['*'];
 
-    protected $appends = ['address_id', 'open_through', 'image_url','image_small', 'dictionary_kitchens', 'dummy_image'];
+    protected $appends = [
+        'address_id',
+        'open_through',
+        'image_url',
+        'image_small',
+        'dictionary_kitchens',
+        'dummy_image',
+    ];
 
     /**
      * The attributes that should be casted to native types.

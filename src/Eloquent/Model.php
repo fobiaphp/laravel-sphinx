@@ -10,20 +10,16 @@ namespace Fobia\Database\SphinxConnection\Eloquent;
 
 use Fobia\Database\SphinxConnection\Eloquent\Query\Builder as QueryBuilder;
 use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar as QueryGrammar;
-use Foolz\SphinxQL\Facet;
-use Foolz\SphinxQL\Match;
-use Illuminate\Database\Query\Expression;
-/*
-* @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMatch($match)   Созвучный поиск.
+
+
+/**
+ * App\Lib\Database\Eloquent\Model
+ *
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder match($column, $value = null, $half = false)   Созвучный поиск.
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder withinGroupOrderBy($name, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMulti($name, $operator, $values) равенство в список.
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder options($name, $value) Опции запроса [OPTION].
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder addFacat($column, $orderBy) Конструкция запроса [FACAT].
- */
-
-/**
- * App\Lib\Database\Eloquent\Model
+ * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facat($callback) Конструкция запроса [FACAT].
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
@@ -39,10 +35,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
      */
     protected $connection = 'sphinx';
 
-    /**
-     * @var \Illuminate\Database\Connection
-     */
-    protected static $instance_connection;
     protected $perPage = 15;
     public $timestamps = false;
     public $incrementing = false;
@@ -82,7 +74,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
      * @param \Fobia\Database\SphinxConnection\Eloquent\Builder $query
      * @param string $column
      * @param string $operator
-     * @param mixed|array  $value
+     * @param mixed|array $value
      * @return mixed
     // */
     //public function scopeWhereMulti($query, $column, $operator = null, $value = null)
@@ -105,30 +97,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
     //            }
     //        }
     //    }
-    //    return $query;
-    //}
-
-    /**
-     * Проверка столбца и значение по умолчанию [ EXIST('type', 0) AS itype ]
-     *
-     * Example:
-     *      $model->addSelectExist('column', 0)
-     *      // SELECT *, EXIST('column', 0) AS icolumn
-     *
-     * @param \Fobia\Database\SphinxConnection\Eloquent\Builder $query
-     * @param string $column    name
-     * @param string $as_column name
-     * @param int $default
-     * @return \Fobia\Database\SphinxConnection\Eloquent\Builder
-     */
-    //public function scopeAddSelectExist($query, $column, $as_column = null, $default = 0)
-    //{
-    //    $db = $this->getConnection();
-    //    if ($as_column === null) {
-    //        $as_column = 'i' . $column;
-    //    }
-    //    $default = (int)$default;
-    //    $query->addSelect($db->raw("EXIST('{$column}', {$default}) AS {$as_column}"));
     //    return $query;
     //}
 
@@ -169,7 +137,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
         }
         return [];
     }
-    
+
     protected function asMva($value)
     {
         if (is_string($value)) {
@@ -211,14 +179,20 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
         return self::$tableFields[$class];
     }
-    
-    
+
+
+    /*
+     * ===================
+     * Override methods
+     * ===================
+     */
+
     protected function castAttribute($key, $value)
     {
         if (is_null($value)) {
             return $value;
         }
-        
+
         switch ($this->getCastType($key)) {
             case 'mva':
                 return $this->asMva($value);
@@ -227,11 +201,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
         }
     }
 
-    /*
-     * ===================
-     * Override methods
-     * ===================
-     */
 
     /**
      * Get a new query builder that doesn't have any global scopes.

@@ -26,11 +26,11 @@ class Builder extends QueryBuilder
      */
     protected $bindings = [
         'select' => [],
-        'join'   => [],
-        'where'  => [],
+        'join' => [],
+        'where' => [],
         'having' => [],
-        'order'  => [],
-        'union'  => [],
+        'order' => [],
+        'union' => [],
     ];
 
     public $grouporders;
@@ -130,9 +130,8 @@ class Builder extends QueryBuilder
         $sql = $this->grammar->compileUpdate($this, $values);
         return $this->connection->update($sql, $this->cleanBindings($bindings));
     }
-    
-    
-    
+
+
     /**
      * OPTION clause (SphinxQL-specific)
      * Used by: SELECT
@@ -175,8 +174,8 @@ class Builder extends QueryBuilder
         }
         return $this;
     }
-    
-    
+
+
     /**
      * WITHIN GROUP ORDER BY clause (SphinxQL-specific)
      * Adds to the previously added columns
@@ -196,14 +195,14 @@ class Builder extends QueryBuilder
         $this->grouporders[$column] = $direction;
         return $this;
     }
-    
-    
+
+
     /**
      * MATCH clause (Sphinx-specific)
      *
-     * @param mixed    $column The column name (can be array, string, Closure, or Match)
-     * @param string   $value  The value
-     * @param boolean  $half  Exclude ", |, - control characters from being escaped
+     * @param mixed $column The column name (can be array, string, Closure, or Match)
+     * @param string $value The value
+     * @param boolean $half Exclude ", |, - control characters from being escaped
      *
      * @return self
      */
@@ -212,23 +211,23 @@ class Builder extends QueryBuilder
         if ($column === '*' || (is_array($column) && in_array('*', $column))) {
             $column = array();
         }
-        
+
         $this->match[] = array('column' => $column, 'value' => $value, 'half' => $half);
-        
+
         return $this;
     }
-    
+
     public function matchQl(\Closure $callback)
     {
         $match = \Foolz\SphinxQL\Match::create($this->getConnection()->createSphinxQL());
         $callback($match);
-        
+
         $this->match($match->compile()->getCompiled());
-        
+
         return $this;
     }
-    
-    
+
+
     /**
      * Allows passing an array with the key as column and value as value
      * Used in: INSERT, REPLACE, UPDATE
@@ -241,12 +240,11 @@ class Builder extends QueryBuilder
         $facet = Facet::create($this->getConnection()->getSphinxQLDriversConnection());
         $callback($facet);
         $this->facets[] = $facet;
-        
+
         return $this;
     }
-    
-    
-    
+
+
     /**
      * Масив преобразуется в список целых числе, null и пустые строки игнорятся
      *
@@ -259,7 +257,7 @@ class Builder extends QueryBuilder
      */
     protected function filterParamsUint($args)
     {
-        
+
         $args = array_flatten((array) $args);
         $args = array_filter((array) $args, function ($v) {
             return (($v !== null) && ($v !== ''));
@@ -270,13 +268,13 @@ class Builder extends QueryBuilder
         $ids = array_map('intval', $args);
         return array_unique(array_values($ids));
     }
-    
+
     /*
      * ===================
      * Override methods
      * ===================
      */
-    
+
     /**
      * @return \Fobia\Database\SphinxConnection\SphinxConnection
      */
@@ -284,5 +282,5 @@ class Builder extends QueryBuilder
     {
         return parent::getConnection();
     }
-    
+
 }
