@@ -188,6 +188,35 @@ class ModelTest extends TestCase
         Model::where('id', $id)->delete();
     }
 
+
+    public function test_scopeOptions()
+    {
+        $q = Model::options('ranker', 'bm25');
+        $this->assertQuery('select * from products OPTION ranker = bm25', $q->toSql());
+
+        $q->options('max_matches', '3000');
+        $this->assertQuery('select * from products OPTION ranker = bm25,max_matches=3000', $q->toSql());
+
+        $q->options('field_weights', '(title=10, body=3)');
+        $this->assertQuery('select * from products OPTION ranker = bm25,max_matches=3000,
+            field_weights=(title=10, body=3)', $q->toSql());
+
+        $q->options('agent_query_timeout', '10000');
+        $this->assertQuery('select * from products OPTION ranker = bm25,max_matches=3000,
+            field_weights=(title=10, body=3) , agent_query_timeout=10000', $q->toSql());
+        $q->get();
+    }
+
+    public function test_scopeOptions2()
+    {
+        $q = Model::options('field_weights', ['title' => 10, 'body' => 3]);
+        $this->assertQuery('select * from products OPTION field_weights=(title=10, body=3)', $q->toSql());
+
+        $q->options('comment', 'my comment');
+        $this->assertQuery('select * from products OPTION field_weights=(title=10, body=3), comment=\'my comment\'',
+            $q->toSql());
+    }
+
     public function test_where()
     {
         $q = Model::where('id', 999999);
@@ -250,7 +279,8 @@ class ModelTest extends TestCase
     public function test_whereMulti_eq()
     {
         $q = Model::whereMulti('tags', '=', 1, 2, 3, '', [5, 6, 7], null);
-        $this->assertQuery("SELECT * FROM products WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7", $q);
+        $this->assertQuery("SELECT * FROM products WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7",
+            $q);
     }
 
     public function test_whereMulti_eq2()
@@ -271,6 +301,7 @@ class ModelTest extends TestCase
     public function test_whereMulti_in()
     {
         $q = Model::whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12]);
-        $this->assertQuery("SELECT * FROM products WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)", $q);
+        $this->assertQuery("SELECT * FROM products WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)",
+            $q);
     }
 }

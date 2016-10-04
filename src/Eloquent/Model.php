@@ -63,43 +63,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
      * ===================
      */
 
-
-    /**
-     * Проверка списков MVA либо множественая проверка всех перечисленых значений
-     *
-     * Example:
-     *     $model->whereMulti('tags', 1, 2, 3, '', [5, 6, 7], null)
-     *     // .. WHERE tags = 1 AND tags = 2 tags = 3 tags = 5 tags = 6 tags = 7
-     *
-     * @param \Fobia\Database\SphinxConnection\Eloquent\Builder $query
-     * @param string $column
-     * @param string $operator
-     * @param mixed|array $value
-     * @return mixed
-    // */
-    //public function scopeWhereMulti($query, $column, $operator = null, $value = null)
-    //{
-    //    if (is_string($operator) && in_array(strtolower($operator), ['in', 'not in', '=', '<', '>', '<=', '>=', '<>', '!='])) {
-    //        $values = array_slice(func_get_args(), 3);
-    //    } else {
-    //        $values = array_slice(func_get_args(), 2);
-    //        $operator = '=';
-    //    }
-    //    $operator = strtolower($operator);
-    //    if ($ids = $this->filterParamsUint($values)) {
-    //        if ($operator == 'in') {
-    //            $query->whereIn($column, $ids);
-    //        } elseif($operator == 'not in') {
-    //            $query->whereNotIn($column, $ids);
-    //        } else {
-    //            foreach ($ids as $id) {
-    //                $query->where($column, $operator, $id);
-    //            }
-    //        }
-    //    }
-    //    return $query;
-    //}
-
     /**
      * Масив преобразуется в список целых числе, null и пустые строки игнорятся
      *
