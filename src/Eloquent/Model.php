@@ -19,15 +19,13 @@ use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar as QueryGrammar;
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder withinGroupOrderBy($column, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMulti($column, $operator, $values) равенство в список.
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder options($name, $value) Опции запроса [OPTION].
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facat($callback) Конструкция запроса [FACAT].
+ * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facet($callback) Конструкция запроса [FACET].
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
  */
 class Model extends \Illuminate\Database\Eloquent\Model
 {
-    protected static $tableFields;
-
     /**
      * База данных
      *
@@ -110,39 +108,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
         }
         return $value;
     }
-
-    /*
-     * ===================
-     * Main static methods
-     * ===================
-     */
-
-    /**
-     * Список полей таблици, по модели
-     *
-     * @return array
-     */
-    public static function getTableFields()
-    {
-        if (self::$tableFields === null) {
-            self::$tableFields = [];
-        }
-
-        $class = get_called_class();
-        if (!in_array($class, self::$tableFields)) {
-            $table = (new $class())->getTable();
-            $fields = [];
-            $db = \DB::connection('sphinx');
-            $rows = $db->select("DESCRIBE {$table}");
-            foreach ($rows as $row) {
-                $fields[$row->Field] = $row->Type;
-            }
-            self::$tableFields[$class] = $fields;
-        }
-
-        return self::$tableFields[$class];
-    }
-
 
     /*
      * ===================
