@@ -25,7 +25,15 @@ class Model extends BaseModel
 
     protected $table = 'products';
 
-    protected $fillable = [];
+    protected $fillable = [
+        'id',
+        'name',
+        'institution_id',
+        'partner_id',
+        'menu_id',
+        'tags',
+        'factors'
+    ];
 
     protected $guarded = ['*'];
 
