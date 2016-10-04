@@ -267,7 +267,7 @@ class Builder extends QueryBuilder
         $match = \Foolz\SphinxQL\Match::create($this->getConnection()->createSphinxQL());
         $callback($match);
 
-        $this->match($match->compile()->getCompiled());
+        $this->match($match);
 
         return $this;
     }

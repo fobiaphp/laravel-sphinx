@@ -66,9 +66,9 @@ class ModelTest extends TestCase
         // $expectedQuery = preg_replace('/\s+/', ' ', $expectedQuery);
         // $actualQuery = preg_replace('/\s+/', ' ', $actualQuery);
 
-        $expectedQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/\(\s+|\s+\)/'],
+        $expectedQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
             [' ', ', ', ' ', ' = '], $expectedQuery);
-        $actualQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/\(\s+|\s+\)/'],
+        $actualQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
             [' ', ', ', ' ', ' = '], $actualQuery);
 
         $this->assertEquals($expectedQuery, $actualQuery);
