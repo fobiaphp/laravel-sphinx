@@ -277,13 +277,22 @@ class Builder extends QueryBuilder
      * Allows passing an array with the key as column and value as value
      * Used in: INSERT, REPLACE, UPDATE
      *
-     * @param \Closure $callback
+     * @param \Closure|\Foolz\SphinxQL\Facet $callback
      * @return self
+     * @throws \Exception
      */
-    public function facet(\Closure $callback)
+    public function facet($callback)
     {
-        $facet = Facet::create($this->getConnection()->getSphinxQLDriversConnection());
-        $callback($facet);
+        if (!$callback instanceof Facet) {
+            if (!$callback instanceof \Closure) {
+                throw new \Exception("Not Facet");
+            }
+            $facet = Facet::create($this->getConnection()->getSphinxQLDriversConnection());
+            $callback($facet);
+        } else {
+            $facet = $callback;
+        }
+
         $this->facets[] = $facet;
 
         return $this;
