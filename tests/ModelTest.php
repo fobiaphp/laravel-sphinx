@@ -8,108 +8,16 @@
 
 namespace Fobia\Database\SphinxConnection\Test;
 
-
-use Fobia\Database\SphinxConnection\SphinxConnection;
 use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Match;
 
 class ModelTest extends TestCase
 {
-    /**
-     * @var SphinxConnection
-     */
-    protected $db;
-
-    // Logger
-    protected $traceLog = null;
-
-    public function toggleTraceLog($toggle = null)
-    {
-        $d = $this->traceLog;
-        if ($toggle !== null) {
-            $this->traceLog = (bool) $toggle;
-        } else {
-            $this->traceLog = !$this->traceLog;
-        }
-        return $d;
-    }
-
-    public function traceLog($log)
-    {
-        if ($this->traceLog) {
-            echo ">> DB Query:: " . $log . PHP_EOL;
-        }
-    }
-
-
-    protected function getQuery()
-    {
-        $db = \DB::connection('sphinx');
-        $log = $db->getQueryLog();
-        $log = array_shift($log);
-        return $log['query'];
-    }
-
-    protected function assertQuery($expectedQuery, $actualQuery = null)
-    {
-        $expectedQuery = mb_strtolower($expectedQuery);
-
-        if ($actualQuery instanceof \Illuminate\Database\Eloquent\Builder) {
-            $actualQuery = $actualQuery->toSql();
-        }
-
-        $actualQuery = ($actualQuery !== null) ? (string) $actualQuery : $this->getQuery();
-
-        $this->traceLog($actualQuery);
-
-        $actualQuery = mb_strtolower($actualQuery);
-        // $expectedQuery = preg_replace('/\s+/', ' ', $expectedQuery);
-        // $actualQuery = preg_replace('/\s+/', ' ', $actualQuery);
-
-        $expectedQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
-            [' ', ', ', ' ', ' = ', ''], $expectedQuery);
-        $actualQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
-            [' ', ', ', ' ', ' = ', ''], $actualQuery);
-
-        $this->assertEquals($expectedQuery, $actualQuery);
-    }
-
-    // =============================================
-
     public function setUp()
     {
-        if ($this->traceLog === null) {
-            $this->traceLog = (bool) $_ENV['TRACE_QUERY_LOG'];
-        }
-
         parent::setUp();
-
-        if ($this->db === null) {
-            $this->db = \DB::connection('sphinx');
-            //\Event::listen('*', function($event) {
-            ////\Event::listen('*', function($event) {
-            //    dump([func_num_args(), func_get_args()]);
-            //    //$this->traceLog($event->sql);
-            //});
-        }
-
-        try {
-            $this->db->reconnect();
-        } catch (\Exception $e) {
-            $this->db = \DB::connection('sphinx');
-        }
-
-        $this->db->enableQueryLog();
+        $this->setUpDatabase($this->app);
     }
-
-    public function tearDown()
-    {
-        $this->db->flushQueryLog();
-        $this->db->disconnect();
-
-        parent::tearDown();
-    }
-
     // =============================================
 
 
@@ -179,9 +87,6 @@ class ModelTest extends TestCase
         ]);
         $this->assertTrue($q);
 
-        $q = Model::where('id', $id)->update([
-            'menu_id' => '2',
-        ]);
         $this->assertEquals(1, $q);
 
         $q = Model::where('id', $id)->update([
@@ -192,6 +97,17 @@ class ModelTest extends TestCase
         Model::where('id', $id)->delete();
     }
 
+    /**
+     * @expectedException \Illuminate\Database\QueryException
+     */
+    public function test_update_exeption()
+    {
+        $id = 999999;
+        Model::where('id', $id)->delete();
+        $q = Model::where('id', $id)->update([
+            'menu_id' => '2',
+        ]);
+    }
 
     public function test_scopeOptions()
     {
