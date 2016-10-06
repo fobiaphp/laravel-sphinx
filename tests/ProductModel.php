@@ -20,7 +20,7 @@ use Fobia\Database\SphinxConnection\Eloquent\Model as BaseModel;
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
  */
-class Model extends BaseModel
+class ProductModel extends BaseModel
 {
 
     protected $table = 'products';

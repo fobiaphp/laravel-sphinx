@@ -23,7 +23,7 @@ class ModelTest extends TestCase
 
     public function test_select()
     {
-        $q = Model::select('id');
+        $q = ProductModel::select('id');
         $this->assertQuery('select id FROM products', $q);
 
         $q->select('name');
@@ -39,7 +39,7 @@ class ModelTest extends TestCase
 
     public function test_withinGroupOrderBy()
     {
-        $q = Model::select('id');
+        $q = ProductModel::select('id');
         $q = $q->withinGroupOrderBy('name');
         $this->assertQuery('SELECT id FROM products WITHIN GROUP ORDER BY name ASC', $q);
 
@@ -52,35 +52,35 @@ class ModelTest extends TestCase
      */
     public function test_withinGroupOrderBy_ex()
     {
-        $q = Model::select('id');
+        $q = ProductModel::select('id');
         $q = $q->withinGroupOrderBy('name', 'a');
     }
 
     public function test_delete()
     {
-        $q = Model::where('id', 999999)->delete();
+        $q = ProductModel::where('id', 999999)->delete();
         $this->assertInternalType('int', $q);
     }
 
     public function test_insert()
     {
         $id = 999999;
-        Model::where('id', $id)->delete();
-        $q = Model::insert([
+        ProductModel::where('id', $id)->delete();
+        $q = ProductModel::insert([
             'id' => '999999',
             'name' => 'new \\\\\\\'name',
         ]);
         $this->assertTrue($q);
 
-        $q = Model::where('id', $id)->delete();
+        $q = ProductModel::where('id', $id)->delete();
         $this->assertEquals(1, $q);
     }
 
     public function test_update()
     {
         $id = 999999;
-        Model::where('id', $id)->delete();
-        $q = Model::insert([
+        ProductModel::where('id', $id)->delete();
+        $q = ProductModel::insert([
             'id' => '999999',
             'name' => '\\\\\\\'name',
             'menu_id' => 1,
@@ -89,12 +89,12 @@ class ModelTest extends TestCase
 
         $this->assertEquals(1, $q);
 
-        $q = Model::where('id', $id)->update([
+        $q = ProductModel::where('id', $id)->update([
             'menu_id' => 3,
         ]);
         $this->assertEquals(1, $q);
 
-        Model::where('id', $id)->delete();
+        ProductModel::where('id', $id)->delete();
     }
 
     /**
@@ -103,15 +103,15 @@ class ModelTest extends TestCase
     public function test_update_exeption()
     {
         $id = 999999;
-        Model::where('id', $id)->delete();
-        $q = Model::where('id', $id)->update([
+        ProductModel::where('id', $id)->delete();
+        $q = ProductModel::where('id', $id)->update([
             'menu_id' => '2',
         ]);
     }
 
     public function test_scopeOptions()
     {
-        $q = Model::options('ranker', 'bm25');
+        $q = ProductModel::options('ranker', 'bm25');
         $this->assertQuery('select * from products OPTION ranker = bm25', $q->toSql());
 
         $q->options('max_matches', '3000');
@@ -129,7 +129,7 @@ class ModelTest extends TestCase
 
     public function test_scopeOptions2()
     {
-        $q = Model::options('field_weights', ['title' => 10, 'body' => 3]);
+        $q = ProductModel::options('field_weights', ['title' => 10, 'body' => 3]);
         $this->assertQuery('select * from products OPTION field_weights=(title=10, body=3)', $q->toSql());
 
         $q->options('comment', 'my comment');
@@ -139,14 +139,14 @@ class ModelTest extends TestCase
 
     public function test_where()
     {
-        $q = Model::where('id', 999999);
+        $q = ProductModel::where('id', 999999);
         $this->assertQuery("select * FROM products WHERE id = 999999", $q);
     }
 
 
     public function test_match()
     {
-        $q = Model::where('id', 999999)->match(function ($m) {
+        $q = ProductModel::where('id', 999999)->match(function ($m) {
             $m->field('name');
             $m->phrase('phrase');
         });
@@ -155,7 +155,7 @@ class ModelTest extends TestCase
 
     public function test_match_column()
     {
-        $q = Model::where('id', 999999)->match(['id'], 'art');
+        $q = ProductModel::where('id', 999999)->match(['id'], 'art');
         $this->assertQuery("select * FROM products WHERE MATCH('(@(id) art)') AND id = 999999", $q);
 
         $q = $q->match(['name'], 'sName');
@@ -164,7 +164,7 @@ class ModelTest extends TestCase
 
     public function test_matchQl_0()
     {
-        $q = Model::where('id', 999999)->match(function ($m) {
+        $q = ProductModel::where('id', 999999)->match(function ($m) {
             $m->field('name');
             $m->phrase('phrase');
         });
@@ -174,7 +174,7 @@ class ModelTest extends TestCase
 
     public function test_matchQl_1()
     {
-        $q = Model::where('id', 999999)->matchQl(function (Match $m) {
+        $q = ProductModel::where('id', 999999)->matchQl(function (Match $m) {
             $m->field('name');
             $m->phrase('phrase');
         });
@@ -184,7 +184,7 @@ class ModelTest extends TestCase
 
     public function test_facet()
     {
-        $q = Model::where('id', '>', 1);
+        $q = ProductModel::where('id', '>', 1);
         $q->facet(function (Facet $f) {
             $f->facet('name');
         });
@@ -198,42 +198,42 @@ class ModelTest extends TestCase
 
     public function test_whereMulti_eq()
     {
-        $q = Model::whereMulti('tags', '=', 1, 2, 3, '', [5, 6, 7], null);
+        $q = ProductModel::whereMulti('tags', '=', 1, 2, 3, '', [5, 6, 7], null);
         $this->assertQuery("SELECT * FROM products WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7",
             $q);
     }
 
     public function test_whereMulti_eq2()
     {
-        $q = Model::whereMulti('id', '=', 1);
+        $q = ProductModel::whereMulti('id', '=', 1);
         $this->assertQuery("SELECT * FROM products WHERE id = 1", $q);
 
-        $q = Model::whereMulti('id', '=', '', null, 1);
+        $q = ProductModel::whereMulti('id', '=', '', null, 1);
         $this->assertQuery("SELECT * FROM products WHERE id = 1", $q);
 
-        $q = Model::whereMulti('id', '=', []);
+        $q = ProductModel::whereMulti('id', '=', []);
         $this->assertQuery("SELECT * FROM products", $q);
 
-        $q = Model::whereMulti('id', '=', '');
+        $q = ProductModel::whereMulti('id', '=', '');
         $this->assertQuery("SELECT * FROM products", $q);
     }
 
     public function test_whereMulti_in()
     {
-        $q = Model::whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12]);
+        $q = ProductModel::whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12]);
         $this->assertQuery("SELECT * FROM products WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)",
             $q);
     }
 
     public function test_cast_model()
     {
-        Model::insert([
+        ProductModel::insert([
             'id' => '999999',
             'name' => 'new name',
             'tags' => $this->db->raw('(1,2,3,4)'),
         ]);
 
-        $model = Model::whereMulti('tags', 'in', [1, 2, 3])->first();
+        $model = ProductModel::whereMulti('tags', 'in', [1, 2, 3])->first();
         if (!$model) {
             $this->markTestSkipped('not found test row');
             return;
@@ -241,12 +241,12 @@ class ModelTest extends TestCase
 
         $this->assertArrayHasKey(0, $model->tags);
 
-        Model::where('id', '999999')->delete();
+        ProductModel::where('id', '999999')->delete();
     }
 
     public function test_cast()
     {
-        $model = new Model();
+        $model = new ProductModel();
         $model->tags = [1, 2, 3];
         $this->assertEquals([1, 2, 3], $model->tags);
 

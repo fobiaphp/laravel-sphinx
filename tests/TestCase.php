@@ -47,7 +47,8 @@ abstract class TestCase extends Orchestra
     {
         $expectedQuery = mb_strtolower($expectedQuery);
 
-        if ($actualQuery instanceof \Illuminate\Database\Eloquent\Builder) {
+        if ($actualQuery instanceof  \Illuminate\Database\Eloquent\Builder
+            || $actualQuery instanceof  \Illuminate\Database\Query\Builder) {
             $actualQuery = $actualQuery->toSql();
         }
 
