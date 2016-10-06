@@ -262,6 +262,11 @@ class Builder extends QueryBuilder
         return $this;
     }
 
+    /**
+     * @param \Closure $callback
+     * @return $this
+     * @deprecated
+     */
     public function matchQl(\Closure $callback)
     {
         $match = \Foolz\SphinxQL\Match::create($this->getConnection()->createSphinxQL());
