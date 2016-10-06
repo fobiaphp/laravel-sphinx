@@ -286,17 +286,29 @@ class Grammar extends BaseGrammar
             return $value;
         }
 
+        //if (is_array($value)) {
+        //    if (array_keys($value) === range(0, count($value) - 1)) {
+        //        $notValidate = array_filter($value, function ($a) {
+        //            return !is_int($a);
+        //        });
+        //        if (!$notValidate) {
+        //            $value = '(' . implode(', ', $value) . ')';
+        //            return $value;
+        //        }
+        //    }
+        //}
+
         if (preg_match('/^\[[\d, ]+\]$/', $value)) {
             return "(" . substr($value, 1, -1) . ")";
         }
-
-        return \DB::connection('sphinx')->getPdo()->quote($value);
-
-        $value = str_replace('\\', '\\\\', $value);
-        return '\'' . str_replace('\'', '\\\'', $value) . '\'';
+        try {
+            return \DB::connection('sphinx')->getPdo()->quote($value);
+        } catch (\Exception $e) {
+            $value = str_replace('\\', '\\\\', $value);
+            return '\'' . str_replace('\'', '\\\'', $value) . '\'';
+        }
 
         //return parent::wrapValue($value);
-
         //return Sphinx::getConnection()->getPdo()->quote($value);
     }
 

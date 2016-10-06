@@ -73,8 +73,8 @@ abstract class TestCase extends Orchestra
 
     public function setUp()
     {
-        if ($this->traceLog === null && isset($_ENV['TRACE_QUERY_LOG'])) {
-            $this->traceLog = (bool) $_ENV['TRACE_QUERY_LOG'];
+        if ($this->traceLog === null) {
+            $this->traceLog = (bool) getenv('TRACE_QUERY_LOG');
         }
         parent::setUp();
     }
@@ -112,9 +112,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('database.connections.sphinx', [
             'driver' => 'sphinx',
             'host' => '127.0.0.1',
-            'port' => (!empty($_ENV['SPHINX_PORT']))
-                ? $_ENV['SPHINX_PORT']
-                : (!empty($_SERVER['SPHINX_PORT']) ? $_SERVER['SPHINX_PORT'] : 9306),
+            'port' => getenv('SPHINX_PORT') ?: 9306,
             'database' => null, // 'SphinxRT',
             'username' => '',
             // 'password' => '',
