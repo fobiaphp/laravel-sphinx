@@ -12,6 +12,7 @@ env:
   global:
     - DRIVER=pdo
     - SPHINXSEARCH_BUILD=rel22
+    - SPHINX_PORT=9307
 
 matrix:
   fast_finish: true

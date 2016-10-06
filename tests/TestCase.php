@@ -37,7 +37,8 @@ abstract class TestCase extends Orchestra
 
     protected function getQuery()
     {
-        $db = \DB::connection('sphinx');
+        /** @var \Illuminate\Database\Connection $db */
+        $db = $this->app['db']->connection('sphinx');
         $log = $db->getQueryLog();
         $log = array_shift($log);
         return $log['query'];
@@ -72,7 +73,7 @@ abstract class TestCase extends Orchestra
 
     public function setUp()
     {
-        if ($this->traceLog === null) {
+        if ($this->traceLog === null && isset($_ENV['TRACE_QUERY_LOG'])) {
             $this->traceLog = (bool) $_ENV['TRACE_QUERY_LOG'];
         }
         parent::setUp();
@@ -111,7 +112,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('database.connections.sphinx', [
             'driver' => 'sphinx',
             'host' => '127.0.0.1',
-            'port' => $_ENV['SPHINX_PORT'], // 9307,
+            'port' => (!empty($_ENV['SPHINX_PORT'])) ? $_ENV['SPHINX_PORT'] : 9306,
             'database' => null, // 'SphinxRT',
             'username' => '',
             // 'password' => '',
