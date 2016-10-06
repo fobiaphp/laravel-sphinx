@@ -303,6 +303,6 @@ class Grammar extends BaseGrammar
 
     public function parameter($value)
     {
-        return $this->isExpression($value) ? $this->getValue($value) : ((is_numeric($value) || is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
+        return $this->isExpression($value) ? $this->getValue($value) : ((/*is_numeric($value) || */is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
     }
 }
