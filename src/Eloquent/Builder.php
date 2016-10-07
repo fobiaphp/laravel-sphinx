@@ -34,12 +34,6 @@ class Builder extends EloquentBuilder
         ]);
     }
 
-    public function getQuery()
-    {
-        return parent::getQuery();
-    }
-
-
     /**
      * Get the count of the total records for the paginator.
      *

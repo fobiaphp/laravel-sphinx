@@ -10,8 +10,6 @@ namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
 use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Match;
-use Foolz\SphinxQL\SphinxQL;
-use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 
@@ -49,6 +47,7 @@ class Grammar extends BaseGrammar
 
         return parent::compileSelect($query);
     }
+
 
     protected function compileGrouporders(BaseBuilder $query, $groups)
     {
@@ -94,13 +93,14 @@ class Grammar extends BaseGrammar
     /**
      * FACET {expr_list} [BY {expr_list}] [ORDER BY {expr | FACET()} {ASC | DESC}] [LIMIT [offset,] count]
      *
-     * @param \Illuminate\Database\Query\Builder $query
+     * @param BaseBuilder $query
      * @param $facets
      * @return \Illuminate\Database\Query\Builder|string
      * @throws \Exception
      */
     protected function compileFacets(BaseBuilder $query, $facets)
     {
+
         $sql = [];
         $query = '';
         if (!empty($facets)) {
@@ -109,14 +109,14 @@ class Grammar extends BaseGrammar
                     throw new \Exception("Not Facet");
                 }
                 // dynamically set the own SphinxQL connection if the Facet doesn't own one
-                if ($facet->getConnection() === null) {
-                    $facet->setConnection($this->getConnection());
+                //if ($facet->getConnection() === null) {
+                //    $facet->setConnection($query->getConnection());
+                //    $sql[] = $facet->getFacet();
+                //    // go back to the status quo for reuse
+                //    $facet->setConnection();
+                //} else {
                     $sql[] = $facet->getFacet();
-                    // go back to the status quo for reuse
-                    $facet->setConnection();
-                } else {
-                    $sql[] = $facet->getFacet();
-                }
+                //}
                 //$facet = "FACET " .
             }
 
@@ -184,8 +184,7 @@ class Grammar extends BaseGrammar
      */
     public function compileMatch(Builder $queryBuilder, $matchs)
     {
-        $connection = $queryBuilder->getConnection()->getSphinxQLDriversConnection();
-        $sphinxQL = SphinxQL::create($connection);
+        $sphinxQL = $queryBuilder->getConnection()->createSphinxQL();
         $query = '';
 
         if (!empty($matchs)) {
@@ -287,22 +286,34 @@ class Grammar extends BaseGrammar
             return $value;
         }
 
+        //if (is_array($value)) {
+        //    if (array_keys($value) === range(0, count($value) - 1)) {
+        //        $notValidate = array_filter($value, function ($a) {
+        //            return !is_int($a);
+        //        });
+        //        if (!$notValidate) {
+        //            $value = '(' . implode(', ', $value) . ')';
+        //            return $value;
+        //        }
+        //    }
+        //}
+
         if (preg_match('/^\[[\d, ]+\]$/', $value)) {
             return "(" . substr($value, 1, -1) . ")";
         }
-
-        return \DB::connection('sphinx')->getPdo()->quote($value);
-
-        $value = str_replace('\\', '\\\\', $value);
-        return '\'' . str_replace('\'', '\\\'', $value) . '\'';
+        try {
+            return \DB::connection('sphinx')->getPdo()->quote($value);
+        } catch (\Exception $e) {
+            $value = str_replace('\\', '\\\\', $value);
+            return '\'' . str_replace('\'', '\\\'', $value) . '\'';
+        }
 
         //return parent::wrapValue($value);
-
         //return Sphinx::getConnection()->getPdo()->quote($value);
     }
 
     public function parameter($value)
     {
-        return $this->isExpression($value) ? $this->getValue($value) : ((is_numeric($value) || is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
+        return $this->isExpression($value) ? $this->getValue($value) : ((/*is_numeric($value) || */is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
     }
 }

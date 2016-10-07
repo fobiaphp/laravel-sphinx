@@ -8,6 +8,7 @@
 
 namespace Fobia\Database\SphinxConnection;
 
+use Closure;
 use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Helper;
 use Foolz\SphinxQL\SphinxQL;
@@ -95,5 +96,26 @@ class SphinxConnection extends MySqlConnection
 
             return $statement->fetchAll($me->getFetchMode());
         });
+    }
+
+    /**
+     * Get the default query grammar instance.
+     *
+     * @return \Fobia\Database\SphinxConnection\Eloquent\Query\Grammar
+     */
+    protected function getDefaultQueryGrammar()
+    {
+        return new \Fobia\Database\SphinxConnection\Eloquent\Query\Grammar();
+    }
+
+    /**
+     * Get a new query builder instance.
+     *
+     * @return \Fobia\Database\SphinxConnection\Eloquent\Query\Builder
+     */
+    public function query()
+    {
+        return new \Fobia\Database\SphinxConnection\Eloquent\Query\Builder($this, $this->getQueryGrammar(),
+            $this->getPostProcessor());
     }
 }
