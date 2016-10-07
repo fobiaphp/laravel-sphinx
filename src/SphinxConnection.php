@@ -28,14 +28,6 @@ class SphinxConnection extends MySqlConnection
     protected $sphinxQLConnection;
 
     /**
-     * @inheritDoc
-     */
-    public function __construct($pdo, $database, $tablePrefix, array $config)
-    {
-        parent::__construct($pdo, $database, $tablePrefix, $config);
-    }
-
-    /**
      * @return \Fobia\Database\SphinxConnection\SphinxQLDriversConnection
      */
     public function getSphinxQLDriversConnection()
