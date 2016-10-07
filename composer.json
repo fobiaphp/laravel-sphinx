@@ -1,7 +1,7 @@
 {
     "name": "fobia/laravel-sphinx",
     "description": "A Laravel query builder for SphinxQL",
-    "keywords": ["laravel", "database", "sphinxql", "sphinx", "SQL", "query builder", "sphinx eloquent",],
+    "keywords": ["laravel", "database", "sphinxql", "sphinx", "SQL", "query builder", "sphinx eloquent"],
     "license": "MIT",
     "type": "project",
     "require": {
