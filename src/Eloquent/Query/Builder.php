@@ -109,7 +109,7 @@ class Builder extends QueryBuilder
         }
 
         $sql = $this->grammar->compileInsert($this, $values);
-        $sql = str_replace('insert into ', 'replace into ', $sql);
+        $sql = preg_replace('/^insert into/iu', 'replace into ', $sql);
 
         // Once we have compiled the insert statement's SQL we can execute it on the
         // connection and return a result as a boolean success indicator as that
