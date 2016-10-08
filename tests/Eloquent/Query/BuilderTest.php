@@ -3,6 +3,7 @@ namespace Fobia\Database\SphinxConnection\Test\Eloquent\Query;
 
 use Fobia\Database\SphinxConnection\Eloquent\Query\Builder;
 use Fobia\Database\SphinxConnection\Test\TestCase;
+use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Match;
 
 class BuilderTest extends TestCase
@@ -152,9 +153,33 @@ class BuilderTest extends TestCase
      */
     public function testWhereMulti()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $q = $this->q->whereMulti('tags', '=', 1, 2, 3, '', [5, 6, 7], null);
+        $this->assertQuery("SELECT * FROM rt WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7",
+            $q);
     }
+
+    public function testWhereMultiEq()
+    {
+        $q = $this->makeQ()->whereMulti('id', '=', 1);
+        $this->assertQuery("SELECT * FROM rt WHERE id = 1", $q);
+
+        $q = $this->makeQ()->whereMulti('id', '=', '', null, 1);
+        $this->assertQuery("SELECT * FROM rt WHERE id = 1", $q);
+
+        $q = $this->makeQ()->whereMulti('id', '=', []);
+        $this->assertQuery("SELECT * FROM rt", $q);
+
+        $q = $this->makeQ()->whereMulti('id', '=', '');
+        $this->assertQuery("SELECT * FROM rt", $q);
+    }
+
+    public function testWhereMultiIn()
+    {
+        $q = $this->q->whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12]);
+        $this->assertQuery("SELECT * FROM rt WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)",
+            $q);
+    }
+
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::option
@@ -240,12 +265,23 @@ class BuilderTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::facet
-     * @todo   Implement testFacet().
      */
     public function testFacet()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $mock = new \stdClass();
+
+        $q = $this->q->facet(function (Facet $f) use ($mock) {
+            $mock->facet = $f;
+            $f->facet('id');
+        });
+        $this->assertInstanceOf(Facet::class, $mock->facet);
+
+        $this->assertQuery("select * FROM rt FACET id", $q->toSql());
+
+        $q->facet(function ($f) {
+            $f->facet('name');
+        });
+        $this->assertQuery("select * FROM rt FACET id FACET name", $q->toSql());
     }
 
     /**
