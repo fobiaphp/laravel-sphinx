@@ -104,10 +104,14 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
     protected function asMva($value)
     {
-        if (is_string($value)) {
+        if (is_string($value) || is_numeric($value) ) {
             $value = preg_replace('/[\(\)\s]/', '', $value);
-            $value = explode(',', $value);
-            $value = array_map('intval', $value);
+            if (strlen($value)) {
+                $value = explode(',', $value);
+                $value = array_map('intval', $value);
+            } else {
+                $value = [];
+            }
         }
         return $value;
     }
