@@ -67,10 +67,39 @@ class ModelTest extends TestCase
      */
     public function testAsMva()
     {
+        $method = new \ReflectionMethod($this->object, 'asMva');
+        $method->setAccessible(true);
+
         $this->assertInternalType('array', $this->object->tags);
         $this->assertNotEmpty(array_filter($this->object->tags, 'is_int'));
         $this->assertArrayHasKey(0, $this->object->tags);
     }
 
+    /**
+     * @dataProvider asMvaDataProvider
+     * @covers \Fobia\Database\SphinxConnection\Eloquent\Model::asMva
+     */
+    public function testAsMva2($val, $expected)
+    {
+        $method = new \ReflectionMethod($this->object, 'asMva');
+        $method->setAccessible(true);
 
+        $this->assertInternalType('array', $method->invoke($this->object, $val));
+        $this->assertEquals($expected, $method->invoke($this->object, $val));
+
+    }
+
+    public function asMvaDataProvider()
+    {
+        return [
+            [[], []],
+            ['', []],
+            [0, [0]],
+            ['0', [0]],
+            ['1', [1]],
+            ['1,2,3', [1,2,3]],
+            ['(1,2,3)', [1,2,3]],
+            [[1,2,3], [1,2,3]],
+        ];
+    }
 }
