@@ -310,26 +310,6 @@ class Grammar extends BaseGrammar
         if ($value === '*') {
             return $value;
         }
-
-        //if (is_array($value)) {
-        //    if (array_keys($value) === range(0, count($value) - 1)) {
-        //        $notValidate = array_filter($value, function ($a) {
-        //            return !is_int($a);
-        //        });
-        //        if (!$notValidate) {
-        //            $value = '(' . implode(', ', $value) . ')';
-        //            return $value;
-        //        }
-        //    }
-        //}
-
-        //if (preg_match('/^\[[\d, ]+\]$/', $value)) {
-        //    return "(" . substr($value, 1, -1) . ")";
-        //}
-        //dump($value);
-        if (is_array($value)) {
-            return '(' . implode(',', array_map('intval', $value)) . ')';
-        }
         try {
             return \DB::connection('sphinx')->getPdo()->quote($value);
         } catch (\Exception $e) {

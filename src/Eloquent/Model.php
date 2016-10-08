@@ -70,6 +70,8 @@ class Model extends \Illuminate\Database\Eloquent\Model
      *
      * @param $args
      * @return array|bool
+     *
+     * @deprecated
      */
     protected function filterParamsUint($args)
     {
@@ -94,7 +96,8 @@ class Model extends \Illuminate\Database\Eloquent\Model
     protected function getMvaAttribute($name)
     {
         if (isset($this->attributes[$name]) && $this->attributes[$name] != '') {
-            return explode(',', $this->attributes[$name]);
+            $value = $this->asMva($this->attributes[$name]);
+            return $value;
         }
         return [];
     }

@@ -11,10 +11,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
  */
 class BuilderTest extends TestCase
 {
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
     public function setUp()
     {
         parent::setUp();
@@ -23,7 +19,6 @@ class BuilderTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Builder::paginate
-     * @todo   Implement testPaginate().
      */
     public function testPaginate()
     {
@@ -35,7 +30,6 @@ class BuilderTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Builder::getCountForPagination
-     * @todo   Implement testGetCountForPagination().
      */
     public function testGetCountForPagination()
     {
