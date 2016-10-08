@@ -28,7 +28,7 @@ class GrammarTest extends TestCase
     public function testWrap()
     {
         $m = new \ReflectionMethod(Grammar::class, 'wrap');
-        $m->setAccessible('public');
+        $m->setAccessible(true);
         $this->assertEquals('column', $m->invoke($this->object, 'column'));
 
         // Remove the following lines when you implement this test.
@@ -43,7 +43,7 @@ class GrammarTest extends TestCase
     public function testWrapValue()
     {
         $m = new \ReflectionMethod(Grammar::class, 'wrapValue');
-        $m->setAccessible('public');
+        $m->setAccessible(true);
         $this->assertEquals('column', $m->invoke($this->object, 'column'));
     }
 
@@ -53,7 +53,7 @@ class GrammarTest extends TestCase
     public function testWrapValue2()
     {
         $m = new \ReflectionMethod(Grammar::class, 'wrapValue2');
-        $m->setAccessible('public');
+        $m->setAccessible(true);
         $this->assertEquals("'column'", $m->invoke($this->object, 'column'));
         $this->assertEquals("'column\''", $m->invoke($this->object, 'column\''));
         $this->assertEquals("'column\'\\\\'", $m->invoke($this->object, 'column\'\\'));
@@ -65,7 +65,7 @@ class GrammarTest extends TestCase
     public function testParameter()
     {
         $m = new \ReflectionMethod(Grammar::class, 'parameter');
-        $m->setAccessible('public');
+        $m->setAccessible(true);
 
         $this->assertEquals("'column'", $m->invoke($this->object, 'column'));
         $this->assertEquals(1, $m->invoke($this->object, 1));
