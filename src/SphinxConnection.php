@@ -71,6 +71,17 @@ class SphinxConnection extends MySqlConnection
         return Facet::create($this->getSphinxQLDriversConnection());
     }
 
+    /**
+     * Run an insert or replace statement against the database.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return bool
+     */
+    public function replace($query, $bindings = [])
+    {
+        return $this->statement($query, $bindings);
+    }
 
     /**
      * Run a select statement against the database.

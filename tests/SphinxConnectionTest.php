@@ -16,15 +16,10 @@ use Illuminate\Database\Connection;
 
 class SphinxConnectionTest extends TestCase
 {
-    /**
-     * @var SphinxConnection
-     */
-    protected $db;
-
     public function setUp()
     {
         parent::setUp();
-        $this->db = \DB::connection('sphinx');
+        $this->setUpDatabase();
     }
 
     /**
@@ -32,10 +27,9 @@ class SphinxConnectionTest extends TestCase
      */
     public function test_Connection()
     {
-        $db = \DB::connection('sphinx');
-        /** @var Connection $db */
-        //dump($db->select("SHOW TABLES"));
+        $this->assertInstanceOf(SphinxConnection::class, $this->db);
 
+        $db = \DB::connection('sphinx');
         $this->assertInstanceOf(SphinxConnection::class, $db);
     }
 

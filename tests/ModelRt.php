@@ -20,17 +20,17 @@ use Fobia\Database\SphinxConnection\Eloquent\Model as BaseModel;
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2016 Dmitriy Tyurin
  */
-class ProductModel extends BaseModel
+class ModelRt extends BaseModel
 {
-
-    protected $table = 'products';
+    protected $table = 'rt';
 
     protected $fillable = [
         'id',
         'name',
-        'institution_id',
-        'partner_id',
-        'menu_id',
+        'content',
+        'gid',
+        'greal',
+        'gbool',
         'tags',
         'factors'
     ];

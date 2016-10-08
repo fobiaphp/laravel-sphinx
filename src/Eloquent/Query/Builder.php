@@ -56,7 +56,8 @@ class Builder extends QueryBuilder
         $bindings = $this->getBindings();
         $sql = $this->toSql();
         foreach ($bindings as $k => $v) {
-            if (is_integer($v) || is_float($v)) {
+            $v = $this->grammar->quoteBinding($v);
+            if ($v !== null) {
                 $sql = preg_replace('/ \?/', ' ' . $v, $sql, 1);
                 unset($bindings[$k]);
             } else {
@@ -67,6 +68,15 @@ class Builder extends QueryBuilder
         return $this->connection->select($sql, $bindings, !$this->useWritePdo);
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     * @deprecated
+     */
+    protected function quoteBinding($value)
+    {
+        return $this->grammar->quoteBinding($value);
+    }
 
     /**
      * Replace a new record into the database.
@@ -104,12 +114,14 @@ class Builder extends QueryBuilder
 
         foreach ($values as $record) {
             foreach ($record as $value) {
-                $bindings[] = $value;
+                if (!is_array($value)) {
+                    $bindings[] = $value;
+                }
             }
         }
 
         $sql = $this->grammar->compileInsert($this, $values);
-        $sql = str_replace('insert into ', 'replace into ', $sql);
+        $sql = preg_replace('/^insert into/iu', 'replace into ', $sql);
 
         // Once we have compiled the insert statement's SQL we can execute it on the
         // connection and return a result as a boolean success indicator as that
@@ -126,9 +138,11 @@ class Builder extends QueryBuilder
     public function update(array $values)
     {
         $bindings = array_values(array_merge($values, $this->getBindings()));
-
         $sql = $this->grammar->compileUpdate($this, $values);
-        return $this->connection->update($sql, $this->cleanBindings($bindings));
+
+        return $this->connection->update($sql, $this->cleanBindings(
+            $this->grammar->prepareBindingsForUpdate($bindings, $values)
+        ));
     }
 
 
@@ -210,7 +224,7 @@ class Builder extends QueryBuilder
      *
      * @return self
      */
-    public function options($name, $value)
+    public function option($name, $value)
     {
         $this->options[] = [$name, $value];
         // если передать $model->options(null, null), произойдет чистка
@@ -218,6 +232,14 @@ class Builder extends QueryBuilder
             $this->options = [];
         }
         return $this;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function options($name, $value)
+    {
+        return $this->option($name, $value);
     }
 
 
@@ -261,22 +283,6 @@ class Builder extends QueryBuilder
 
         return $this;
     }
-
-    /**
-     * @param \Closure $callback
-     * @return $this
-     * @deprecated
-     */
-    public function matchQl(\Closure $callback)
-    {
-        $match = \Foolz\SphinxQL\Match::create($this->getConnection()->createSphinxQL());
-        $callback($match);
-
-        $this->match($match);
-
-        return $this;
-    }
-
 
     /**
      * Allows passing an array with the key as column and value as value

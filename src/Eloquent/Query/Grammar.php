@@ -100,7 +100,6 @@ class Grammar extends BaseGrammar
      */
     protected function compileFacets(BaseBuilder $query, $facets)
     {
-
         $sql = [];
         $query = '';
         if (!empty($facets)) {
@@ -188,8 +187,6 @@ class Grammar extends BaseGrammar
         $query = '';
 
         if (!empty($matchs)) {
-            $query .= 'WHERE MATCH(';
-
             $matched = array();
 
             foreach ($matchs as $match) {
@@ -218,7 +215,7 @@ class Grammar extends BaseGrammar
             }
 
             $matched = implode(' ', $matched);
-            $query .= $sphinxQL->getConnection()->escape(trim($matched)) . ') ';
+            $query = 'WHERE MATCH(' . $sphinxQL->getConnection()->escape(trim($matched)) . ') ';
         }
 
         return $query;
@@ -233,6 +230,18 @@ class Grammar extends BaseGrammar
             $where = ' AND ' . substr($where, 5);
         }
         return $where;
+    }
+
+    /**
+     * Prepare the bindings for an update statement.
+     *
+     * @param  array  $bindings
+     * @param  array  $values
+     * @return array
+     */
+    public function prepareBindingsForUpdate(array $bindings, array $values)
+    {
+        return array_filter($bindings, 'is_string');
     }
 
     /**
@@ -280,26 +289,38 @@ class Grammar extends BaseGrammar
         return $value;
     }
 
+
+    /**
+     * @param mixed $value
+     * @return int|string|null
+     */
+    public function quoteBinding($value)
+    {
+        if ($value === null) {
+            $value = 'null';
+        } elseif ($value === true) {
+            $value = 1;
+        } elseif ($value === false) {
+            $value = 0;
+        } elseif (is_int($value)) {
+            $value = (int) $value;
+        } elseif (is_float($value)) {
+            // Convert to non-locale aware float to prevent possible commas
+            $value = sprintf('%F', $value);
+        }  elseif (is_array($value)) {
+            // Supports MVA attributes
+            $value = '(' . implode(', ', array_map('intval', $value)) . ')';
+        } else {
+            $value = null;
+        }
+
+        return $value;
+    }
+
     protected function wrapValue2($value)
     {
         if ($value === '*') {
             return $value;
-        }
-
-        //if (is_array($value)) {
-        //    if (array_keys($value) === range(0, count($value) - 1)) {
-        //        $notValidate = array_filter($value, function ($a) {
-        //            return !is_int($a);
-        //        });
-        //        if (!$notValidate) {
-        //            $value = '(' . implode(', ', $value) . ')';
-        //            return $value;
-        //        }
-        //    }
-        //}
-
-        if (preg_match('/^\[[\d, ]+\]$/', $value)) {
-            return "(" . substr($value, 1, -1) . ")";
         }
         try {
             return \DB::connection('sphinx')->getPdo()->quote($value);
@@ -314,6 +335,12 @@ class Grammar extends BaseGrammar
 
     public function parameter($value)
     {
-        return $this->isExpression($value) ? $this->getValue($value) : ((/*is_numeric($value) || */is_integer($value) || is_float($value)) ? $value : $this->wrapValue2($value));
+        return $this->isExpression($value)
+            ? $this->getValue($value)
+            : (
+                (($v = $this->quoteBinding($value)) !== null)
+                    ? $v
+                    : $this->wrapValue2($value)
+            );
     }
 }
