@@ -1,24 +1,10 @@
 <?php
-/**
- * ATest.php file
- *
- * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
- */
 
 namespace Fobia\Database\SphinxConnection\Test\Eloquent\Query;
 
 use Fobia\Database\SphinxConnection\Test\ModelRt;
 use Illuminate\Database\Eloquent\Collection;
 
-
-/**
- * Class ATest
- *
- * @package    Fobia\Database\SphinxConnection\Test\Eloquent\Query
- * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
- */
 class BuilderModelTest extends BuilderTest
 {
     public function makeQ()
@@ -34,7 +20,9 @@ class BuilderModelTest extends BuilderTest
         $this->markTestIncomplete("asd");
     }
 
-
+    /**
+     * @todo   Implement testSave().
+     */
     public function testSave()
     {
         $this->markTestIncomplete("testSave");
