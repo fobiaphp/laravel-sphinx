@@ -174,7 +174,7 @@ class ModelTest extends TestCase
 
     public function test_matchQl_1()
     {
-        $q = ProductModel::where('id', 999999)->matchQl(function (Match $m) {
+        $q = ProductModel::where('id', 999999)->match(function (Match $m) {
             $m->field('name');
             $m->phrase('phrase');
         });

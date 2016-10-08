@@ -56,7 +56,7 @@ class Builder extends QueryBuilder
         $bindings = $this->getBindings();
         $sql = $this->toSql();
         foreach ($bindings as $k => $v) {
-            $v = $this->quoteBinding($v);
+            $v = $this->grammar->quoteBinding($v);
             if ($v !== null) {
                 $sql = preg_replace('/ \?/', ' ' . $v, $sql, 1);
                 unset($bindings[$k]);
@@ -68,27 +68,14 @@ class Builder extends QueryBuilder
         return $this->connection->select($sql, $bindings, !$this->useWritePdo);
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     * @deprecated
+     */
     protected function quoteBinding($value)
     {
-        if ($value === null) {
-            $value = 'null';
-        } elseif ($value === true) {
-            $value = 1;
-        } elseif ($value === false) {
-            $value = 0;
-        } elseif (is_int($value)) {
-            $value = (int) $value;
-        } elseif (is_float($value)) {
-            // Convert to non-locale aware float to prevent possible commas
-            $value = sprintf('%F', $value);
-        }  elseif (is_array($value)) {
-            // Supports MVA attributes
-            $value = '(' . implode(', ', array_map('intval', $value)) . ')';
-        } else {
-            $value = null;
-        }
-
-        return $value;
+        return $this->grammar->quoteBinding($value);
     }
 
     /**
@@ -235,7 +222,7 @@ class Builder extends QueryBuilder
      *
      * @return self
      */
-    public function options($name, $value)
+    public function option($name, $value)
     {
         $this->options[] = [$name, $value];
         // если передать $model->options(null, null), произойдет чистка
@@ -243,6 +230,14 @@ class Builder extends QueryBuilder
             $this->options = [];
         }
         return $this;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function options($name, $value)
+    {
+        return $this->option($name, $value);
     }
 
 
@@ -286,22 +281,6 @@ class Builder extends QueryBuilder
 
         return $this;
     }
-
-    /**
-     * @param \Closure $callback
-     * @return $this
-     * @deprecated
-     */
-    public function matchQl(\Closure $callback)
-    {
-        $match = \Foolz\SphinxQL\Match::create($this->getConnection()->createSphinxQL());
-        $callback($match);
-
-        $this->match($match);
-
-        return $this;
-    }
-
 
     /**
      * Allows passing an array with the key as column and value as value

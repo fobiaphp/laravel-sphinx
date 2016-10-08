@@ -46,8 +46,6 @@ abstract class TestCase extends Orchestra
 
     protected function assertQuery($expectedQuery, $actualQuery = null)
     {
-        $expectedQuery = mb_strtolower($expectedQuery);
-
         if ($actualQuery instanceof  \Illuminate\Database\Eloquent\Builder
             || $actualQuery instanceof  \Illuminate\Database\Query\Builder) {
             $actualQuery = $actualQuery->toSql();
@@ -58,6 +56,8 @@ abstract class TestCase extends Orchestra
         $this->traceLog($actualQuery);
 
         $actualQuery = mb_strtolower($actualQuery);
+        $expectedQuery = mb_strtolower($expectedQuery);
+
         // $expectedQuery = preg_replace('/\s+/', ' ', $expectedQuery);
         // $actualQuery = preg_replace('/\s+/', ' ', $actualQuery);
 
@@ -131,8 +131,12 @@ abstract class TestCase extends Orchestra
     /**
      * @param \Illuminate\Foundation\Application $app
      */
-    protected function setUpDatabase($app)
+    protected function setUpDatabase($app = null)
     {
+        if ($app == null) {
+            $app = $this->app;
+        }
+
         if ($this->db === null) {
             $this->db = $app['db']->connection('sphinx');
             //$this->db = \DB::connection('sphinx');
