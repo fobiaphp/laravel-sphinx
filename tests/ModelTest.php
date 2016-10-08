@@ -256,4 +256,18 @@ class ModelTest extends TestCase
         $model->tags = '(1,2,3)';
         $this->assertEquals([1, 2, 3], $model->tags);
     }
+
+    public function test_mvaType()
+    {
+        ProductModel::where('id', 999999)->delete();
+        ProductModel::insert([
+            'id' => '999999',
+            'name' => 'new name',
+            'tags' => $this->db->raw('(1,2,3,4)'),
+        ]);
+
+        $q = ProductModel::where('id', 999999);
+        $r = $q->update(['tags' => [3]]);
+        $this->assertEquals(1, $r);
+    }
 }

@@ -100,7 +100,6 @@ class Grammar extends BaseGrammar
      */
     protected function compileFacets(BaseBuilder $query, $facets)
     {
-
         $sql = [];
         $query = '';
         if (!empty($facets)) {
@@ -298,8 +297,12 @@ class Grammar extends BaseGrammar
         //    }
         //}
 
-        if (preg_match('/^\[[\d, ]+\]$/', $value)) {
-            return "(" . substr($value, 1, -1) . ")";
+        //if (preg_match('/^\[[\d, ]+\]$/', $value)) {
+        //    return "(" . substr($value, 1, -1) . ")";
+        //}
+        //dump($value);
+        if (is_array($value)) {
+            return '(' . implode(',', array_map('intval', $value)) . ')';
         }
         try {
             return \DB::connection('sphinx')->getPdo()->quote($value);

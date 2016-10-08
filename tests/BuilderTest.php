@@ -53,9 +53,9 @@ class BuilderTest extends TestCase
     public function test_mvaType()
     {
         $q = $this->db->table('products');
-        $q->where('id', 1);
-        $q->update(['tags' => '[1,2,3]']);
-        $this->assertQuery("update products set tags = (1,2,3) where id = 1", $this->getQuery());
+        $q->where('id', 1000);
+        $r = $q->update(['tags' => [1,2,3]]);
+        $this->assertEquals(1, $r);
     }
 
     public function test_select()

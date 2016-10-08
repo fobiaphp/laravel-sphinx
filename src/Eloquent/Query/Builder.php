@@ -56,7 +56,8 @@ class Builder extends QueryBuilder
         $bindings = $this->getBindings();
         $sql = $this->toSql();
         foreach ($bindings as $k => $v) {
-            if (is_integer($v) || is_float($v)) {
+            $v = $this->quoteBinding($v);
+            if ($v !== null) {
                 $sql = preg_replace('/ \?/', ' ' . $v, $sql, 1);
                 unset($bindings[$k]);
             } else {
@@ -67,6 +68,28 @@ class Builder extends QueryBuilder
         return $this->connection->select($sql, $bindings, !$this->useWritePdo);
     }
 
+    protected function quoteBinding($value)
+    {
+        if ($value === null) {
+            $value = 'null';
+        } elseif ($value === true) {
+            $value = 1;
+        } elseif ($value === false) {
+            $value = 0;
+        } elseif (is_int($value)) {
+            $value = (int) $value;
+        } elseif (is_float($value)) {
+            // Convert to non-locale aware float to prevent possible commas
+            $value = sprintf('%F', $value);
+        }  elseif (is_array($value)) {
+            // Supports MVA attributes
+            $value = '(' . implode(', ', array_map('intval', $value)) . ')';
+        } else {
+            $value = null;
+        }
+
+        return $value;
+    }
 
     /**
      * Replace a new record into the database.
@@ -125,10 +148,12 @@ class Builder extends QueryBuilder
      */
     public function update(array $values)
     {
-        $bindings = array_values(array_merge($values, $this->getBindings()));
+        //$bindings = array_values(array_merge($values, $this->getBindings()));
 
         $sql = $this->grammar->compileUpdate($this, $values);
-        return $this->connection->update($sql, $this->cleanBindings($bindings));
+        //return $this->connection->update($sql, $this->cleanBindings($bindings));
+
+        return $this->connection->update($sql, []);
     }
 
 
