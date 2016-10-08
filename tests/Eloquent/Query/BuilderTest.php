@@ -39,7 +39,7 @@ class BuilderTest extends TestCase
      */
     public function tearDown()
     {
-        // $this->db->statement("TRUNCATE RTINDEX rt");
+         $this->db->statement("TRUNCATE RTINDEX rt");
         parent::tearDown();
     }
 
