@@ -39,7 +39,7 @@ class BuilderTest extends TestCase
      */
     public function tearDown()
     {
-        $this->db->statement("TRUNCATE RTINDEX rt");
+        // $this->db->statement("TRUNCATE RTINDEX rt");
         parent::tearDown();
     }
 
@@ -121,6 +121,14 @@ class BuilderTest extends TestCase
         ]);
         $q = $this->q->where('id', 1)->delete();
         $this->assertInternalType('int', $q);
+
+        $this->makeQ()->insert([
+            'id' => 1,
+        ]);
+
+        //$this->expectException(\Exception::class);
+        //$q = $this->makeQ()->where('id', '1')->delete();
+        //dump($q, $this->getQuery());
     }
 
 
