@@ -171,7 +171,6 @@ class BuilderTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::update
-     * @todo   Implement testUpdate().
      */
     public function testUpdate()
     {
@@ -346,12 +345,26 @@ class BuilderTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::filterParamsUint
-     * @todo   Implement testFilterParamsUint().
      */
     public function testFilterParamsUint()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $method = new \ReflectionMethod($this->q, 'filterParamsUint');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->q, [1,2,null,4]);
+        $this->assertEquals([1, 2, 4], $result);
+
+        $result = $method->invoke($this->q, [1,[2,[null,4]]]);
+        $this->assertEquals([1, 2, 4], $result);
+
+        $result = $method->invoke($this->q, [null, 1,[2,[null,4]]]);
+        $this->assertEquals([1, 2, 4], $result);
+
+        $result = $method->invoke($this->q, [[null, ''], 1, [2, [null, 4]]]);
+        $this->assertEquals([1, 2, 4], $result);
+
+        $result = $method->invoke($this->q, [null, null, [null, ''], 1, 2, 4]);
+        $this->assertEquals([1, 2, 4], $result);
     }
 
 }
