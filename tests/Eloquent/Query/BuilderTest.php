@@ -109,7 +109,20 @@ class BuilderTest extends TestCase
 
         $q = $this->makeQ()->select('id', 'name');
         $this->assertQuery("select id, name FROM rt", $q);
+
+        $q = $this->makeQ()->select(['*', 'id']);
+        $this->assertQuery('select *, id FROM rt', $q);
     }
+
+    public function testDelete()
+    {
+        $this->makeQ()->replace([
+            'id' => 1,
+        ]);
+        $q = $this->q->where('id', 1)->delete();
+        $this->assertInternalType('int', $q);
+    }
+
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::replace
@@ -145,6 +158,19 @@ class BuilderTest extends TestCase
             'gbool' => true,
         ]);
         $this->assertEquals(1, $r);
+    }
+
+    /**
+     * @expectedException \Illuminate\Database\QueryException
+     */
+    public function testUpdateExeption()
+    {
+        $this->makeQ()->replace([
+            'id' => 1,
+        ]);
+        $q = $this->q->where('id', 1)->update([
+            'gid' => '2',
+        ]);
     }
 
     /**
