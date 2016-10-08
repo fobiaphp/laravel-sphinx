@@ -15,7 +15,22 @@ class BuilderTest extends TestCase
     {
         parent::setUp();
         parent::setUpDatabase();
+
+        $this->db->table('rt')->replace([
+            ['id' => 1],
+            ['id' => 2],
+            ['id' => 3],
+            ['id' => 4],
+            ['id' => 5],
+        ]);
     }
+    //
+    //public function tearDown()
+    //{
+    //    $this->db->statement("TRUNCATE RTINDEX rt");
+    //    parent::tearDown();
+    //}
+
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Builder::paginate
