@@ -164,6 +164,9 @@ class BuilderTest extends TestCase
 
         $this->assertEquals(1, $r);
         $this->assertQuery("replace into rt (id, name, tags, gid, greal, gbool) values (1, 'name', (4, 5, 6), 2, 2.500000, 0)");
+
+        $m = $this->makeQ()->find(1);
+        $this->assertEquals(2, (int) $m->gid);
     }
 
     /**
@@ -175,13 +178,20 @@ class BuilderTest extends TestCase
         $this->makeQ()->replace([
             'id' => 1,
         ]);
+        $m = $this->makeQ()->find(1);
+        $this->assertEmpty($m->tags);
+
         $r = $this->q->where('id', 1)->update([
-            'gid' => 7,
-            'greal' => 8.6,
+            'gid' => 2,
+            'greal' => 2.5,
             'tags' => [1, 2, 3, 4, 5],
             'gbool' => true,
         ]);
         $this->assertEquals(1, $r);
+
+        $m = $this->makeQ()->find(1);
+        $this->assertEquals(2, (int) $m->gid);
+        $this->assertNotEmpty($m->tags);
     }
 
     /**

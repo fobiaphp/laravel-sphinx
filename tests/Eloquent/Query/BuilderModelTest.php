@@ -37,14 +37,27 @@ class BuilderModelTest extends BuilderTest
 
     public function testSave()
     {
-        $this->markTestIncomplete("asd");
+        $this->markTestIncomplete("testSave");
+        return ;
         $this->q->insert([
             'id' => 1,
+            'gid' => 1,
+            'tags' => $this->q->getConnection()->raw('(1)'),
             'name' => 'new name',
         ]);
 
-        //$model = ModelRt::find(1);
-        //dump($model->name);
+        $model = ModelRt::find(1);
+        $model->gid = 10;
+        $model->save();
+
+        $model = ModelRt::find(1);
+        $this->assertEquals(10, (int) $model->gid);
+
+        $model->tags = [ 10 ];
+        $model->save();
+
+        $model = ModelRt::find(1);
+        $this->assertEquals([10], $model->tags);
     }
 
     public function testFind()

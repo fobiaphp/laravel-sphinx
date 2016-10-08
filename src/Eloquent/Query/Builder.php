@@ -137,12 +137,12 @@ class Builder extends QueryBuilder
      */
     public function update(array $values)
     {
-        //$bindings = array_values(array_merge($values, $this->getBindings()));
-
+        $bindings = array_values(array_merge($values, $this->getBindings()));
         $sql = $this->grammar->compileUpdate($this, $values);
-        //return $this->connection->update($sql, $this->cleanBindings($bindings));
 
-        return $this->connection->update($sql, []);
+        return $this->connection->update($sql, $this->cleanBindings(
+            $this->grammar->prepareBindingsForUpdate($bindings, $values)
+        ));
     }
 
 
