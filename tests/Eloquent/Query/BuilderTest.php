@@ -33,6 +33,22 @@ class BuilderTest extends TestCase
         return $this->db->table('rt');
     }
 
+    protected function seedRtTable()
+    {
+        $inserts = [];
+        for ($i = 0; $i < 10; $i++) {
+            $inserts[] =[
+                'id' => 1 + $i,
+                'name' => 'name ' . $i,
+                'tags' => $this->db->raw('(1, 2, 3)'),
+                'gid' => 1 + $i,
+                'greal' => 1.5 + $i,
+                'gbool' => true,
+            ];
+        }
+        $this->db->table('rt')->insert($inserts);
+    }
+
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.

@@ -62,22 +62,12 @@ class BuilderModelTest extends BuilderTest
         ModelRt::findOrFail(100);
     }
 
-    /**
-     * @return array
-     */
     public function testWhere()
     {
-        $this->q->insert([
-            [ 'id' => 1, 'name' => 'name 1',],
-            [ 'id' => 2, 'name' => 'name 2',],
-            [ 'id' => 3, 'name' => 'name 3',],
-            [ 'id' => 4, 'name' => 'name 4',],
-            ]
-        );
+        $this->seedRtTable();
+
         $result = $this->q->where('id', '>', 0)->get();
-
         $this->assertInstanceOf(Collection::class, $result);
-
         $this->assertInstanceOf(ModelRt::class, $result->first());
     }
 
