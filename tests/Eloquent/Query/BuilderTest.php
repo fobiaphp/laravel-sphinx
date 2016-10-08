@@ -90,14 +90,15 @@ class BuilderTest extends TestCase
         $r = $this->q->insert([
             'id' => 1,
             'name' => 'name',
-            'tags' => [1, 2, 3],
+            //'tags' => [1, 2, 3],
+            'tags' => $this->db->raw('(1, 2, 3)'),
             'gid' => 1,
             'greal' => 1.5,
             'gbool' => true,
         ]);
 
         $this->assertEquals(1, $r);
-        $this->assertQuery("insert into rt (id, name, tags, gid, greal, gbool) values (1, 'name', (1, 2, 3), 1, 1.5, 1))");
+        $this->assertQuery("insert into rt (id, name, tags, gid, greal, gbool) values (1, 'name', (1, 2, 3), 1, 1.500000, 1)");
     }
 
     public function testSelect()
@@ -120,11 +121,11 @@ class BuilderTest extends TestCase
             'tags' => [4, 5, 6],
             'gid' => 2,
             'greal' => 2.5,
-            'gbool' => true,
+            'gbool' => false,
         ]);
 
         $this->assertEquals(1, $r);
-        $this->assertQuery("replace into rt (id, name, tags, gid, greal, gbool) values (1, 'name', (1, 2, 3), 1, 1.5, 1))");
+        $this->assertQuery("replace into rt (id, name, tags, gid, greal, gbool) values (1, 'name', (4, 5, 6), 2, 2.500000, 0)");
     }
 
     /**

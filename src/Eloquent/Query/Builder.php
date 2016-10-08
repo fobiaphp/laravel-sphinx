@@ -114,7 +114,9 @@ class Builder extends QueryBuilder
 
         foreach ($values as $record) {
             foreach ($record as $value) {
-                $bindings[] = $value;
+                if (!is_array($value)) {
+                    $bindings[] = $value;
+                }
             }
         }
 

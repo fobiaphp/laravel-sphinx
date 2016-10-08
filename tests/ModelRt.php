@@ -29,7 +29,8 @@ class ModelRt extends BaseModel
         'name',
         'content',
         'gid',
-        'strname',
+        'greal',
+        'gbool',
         'tags',
         'factors'
     ];
