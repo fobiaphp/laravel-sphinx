@@ -272,7 +272,8 @@ class Grammar extends BaseGrammar
         // normal, so if there is more than one segment, we will wrap the first
         // segments as if it was a table and the rest as just regular values.
         foreach ($segments as $key => $segment) {
-            if ($key == 0 && count($segments) == 2) {
+            //if ($key == 0 && count($segments) == 2) {
+            if ($key == 0 && count($segments) >= 2) {
                 // $wrapped[] = '`'.$segments[1].'`';
             } else {
                 $wrapped[] = $this->wrapValue($segment);

@@ -171,6 +171,11 @@ class Model extends \Illuminate\Database\Eloquent\Model
         return new QueryBuilder($conn, $grammar, $conn->getPostProcessor());
     }
 
+    protected function getKeyForSaveQuery()
+    {
+        return (int) parent::getKeyForSaveQuery();
+    }
+
     public function getConnection()
     {
         return static::resolveConnection($this->getConnectionName());
