@@ -48,7 +48,6 @@ class Grammar extends BaseGrammar
         return parent::compileSelect($query);
     }
 
-
     protected function compileGrouporders(BaseBuilder $query, $groups)
     {
         $sql = [];
@@ -172,7 +171,6 @@ class Grammar extends BaseGrammar
         return 'FROM ' . $this->wrapTable($table);
     }
 
-
     /**
      * Compiles the MATCH part of the queries
      * Used by: SELECT, DELETE, UPDATE
@@ -289,8 +287,9 @@ class Grammar extends BaseGrammar
         return $value;
     }
 
-
     /**
+     * Форматирует в синтаксис sphinx либо null
+     *
      * @param mixed $value
      * @return int|string|null
      */
@@ -307,7 +306,7 @@ class Grammar extends BaseGrammar
         } elseif (is_float($value)) {
             // Convert to non-locale aware float to prevent possible commas
             $value = sprintf('%F', $value);
-        }  elseif (is_array($value)) {
+        } elseif (is_array($value)) {
             // Supports MVA attributes
             $value = '(' . implode(', ', array_map('intval', $value)) . ')';
         } else {
