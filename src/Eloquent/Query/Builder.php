@@ -96,12 +96,10 @@ class Builder extends QueryBuilder
         // inserts statements by verifying the elements are actually an array.
         if (!is_array(reset($values))) {
             $values = [$values];
-        }
-
-        // Since every insert gets treated like a batch insert, we will make sure the
-        // bindings are structured in a way that is convenient for building these
-        // inserts statements by verifying the elements are actually an array.
-        else {
+        } else {
+            // Since every insert gets treated like a batch insert, we will make sure the
+            // bindings are structured in a way that is convenient for building these
+            // inserts statements by verifying the elements are actually an array.
             foreach ($values as $key => $value) {
                 ksort($value);
                 $values[$key] = $value;
@@ -121,7 +119,7 @@ class Builder extends QueryBuilder
         }
 
         $sql = $this->grammar->compileInsert($this, $values);
-        $sql = preg_replace('/^insert into/iu', 'replace into ', $sql);
+        $sql = preg_replace('/^insert into /iu', 'replace into ', $sql);
 
         // Once we have compiled the insert statement's SQL we can execute it on the
         // connection and return a result as a boolean success indicator as that
@@ -170,7 +168,7 @@ class Builder extends QueryBuilder
         }
 
         $operator = strtolower($operator);
-        if ($operator !== 'in' && $operator !== 'not in' ) {
+        if ($operator !== 'in' && $operator !== 'not in') {
             $ids = array_slice(func_get_args(), 2);
             $ids = $this->filterParamsUint($ids);
         } else {
@@ -181,7 +179,7 @@ class Builder extends QueryBuilder
             foreach ($ids as $id) {
                 if ($operator == 'in') {
                     $this->whereIn($column, (array) $id);
-                } elseif($operator == 'not in') {
+                } elseif ($operator == 'not in') {
                     $this->whereNotIn($column, (array) $id);
                 } else {
                     $this->where($column, $operator, $id);
@@ -227,7 +225,7 @@ class Builder extends QueryBuilder
     public function option($name, $value)
     {
         $this->options[] = [$name, $value];
-        // если передать $model->options(null, null), произойдет чистка
+        // если передать $model->option(null, null), произойдет чистка
         if ($name === null && $value === null) {
             $this->options = [];
         }
@@ -346,5 +344,4 @@ class Builder extends QueryBuilder
     {
         return parent::getConnection();
     }
-
 }

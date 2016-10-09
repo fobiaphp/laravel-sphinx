@@ -35,8 +35,30 @@ class BuilderTest extends TestCase
 
     protected function seedRtTable()
     {
+        $factors = [
+            "id" => 1,
+            "title"=> "some title",
+            "arr"=> [1, 2, 3],
+            "keys"=> [
+                "tag1",
+                "tag2",
+                "tag3"
+            ],
+            "tags"=> [
+                "tag1",
+                "tag2",
+                "tag3" =>
+                    [
+                        "one" => "two",
+                        "three"=> [4, 5]
+                    ]
+            ]
+        ];
         $inserts = [];
         for ($i = 0; $i < 10; $i++) {
+            $factors["id"] = 1+ $i;
+            $factors["title"] = "some title " . (1+ $i);
+
             $inserts[] =[
                 'id' => 1 + $i,
                 'name' => 'name ' . $i,
@@ -44,6 +66,7 @@ class BuilderTest extends TestCase
                 'gid' => 1 + $i,
                 'greal' => 1.5 + $i,
                 'gbool' => true,
+                'factors' => json_encode($factors)
             ];
         }
         $this->db->table('rt')->insert($inserts);
@@ -55,7 +78,7 @@ class BuilderTest extends TestCase
      */
     public function tearDown()
     {
-         $this->db->statement("TRUNCATE RTINDEX rt");
+        $this->db->statement("TRUNCATE RTINDEX rt");
         parent::tearDown();
     }
 
@@ -129,6 +152,28 @@ class BuilderTest extends TestCase
         $q = $this->makeQ()->select(['*', 'id']);
         $this->assertQuery('select *, id FROM rt', $q);
     }
+
+    public function testSelectJson()
+    {
+        $q = $this->makeQ()->select('rt.factors.id');
+        $this->assertQuery("select factors.id FROM rt", $q);
+
+        $q = $this->makeQ()->select('rt.factors.keys[0]');
+        $this->assertQuery("select factors.keys[0] FROM rt", $q);
+    }
+
+    public function testWhere()
+    {
+        $q = $this->makeQ()->where('id', 1);
+        $this->assertQuery("select * FROM rt WHERE id = 1", $q);
+
+        $q = $this->makeQ()->where('rt.factors.id', 1);
+        $this->assertQuery("select * FROM rt WHERE factors.id = 1", $q);
+
+        $q = $this->makeQ()->where('rt.factors.keys[0]', 1);
+        $this->assertQuery("select * FROM rt WHERE factors.keys[0] = 1", $q);
+    }
+
 
     public function testDelete()
     {

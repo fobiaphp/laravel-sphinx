@@ -39,6 +39,4 @@ class SphinxQLDriversConnection extends ConnectionBase
     {
         return !empty($this->connection);
     }
-
-
 }

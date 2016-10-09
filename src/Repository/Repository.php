@@ -64,9 +64,9 @@ abstract class Repository extends BaseRepository
             $page = ceil($params['offset'] / $perPage) + 1;
         }
 
-        // Так уж и быть, позволим внедрять внешнии билдеры запроса, чтож мы так ограничели разработчиков то.
+        // Так уж и быть, позволим внедрять внешнии билдеры запроса,
+        // чтож мы так ограничели разработчиков то.
         $this->applyCriteria();
         return $this->model->paginate($perPage, $columns, $pageName, $page);
     }
-
 }
