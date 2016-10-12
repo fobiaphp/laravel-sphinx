@@ -33,36 +33,39 @@ for more detailed installation and usage instructions.
 
 ## Config 
 
+After updating composer, add the ServiceProvider to the providers array in config/app.php
 
+```php
+Fobia\Database\SphinxConnection\SphinxServiceProvider::class,
+```
 
-Для подключения `Sphinx` к `App`, достаточно добавиить `SphinxServiceProvider` в список провайдеров.
+Finally you can just add `Sphinx Connection` to the database array in config/database.php 
 
-В файле `database.php` секции  `connections`  нужно дописать
-
-        'sphinx' => [
-            'driver'   => 'sphinx',
-            'host'     => env('SPHINX_HOST', env('DB_HOST','127.0.0.1')),
-            'port' => 9306,
-        ],
-
-
+```php
+    'sphinx' => [
+        'driver'   => 'sphinx',
+        'host'     => env('SPHINX_HOST', env('DB_HOST','127.0.0.1')),
+        'port' => 9306,
+    ],
+```
 
 ## Usage
 
+Get a connection and build queries
 
-Получаем `connection` и строим запросы
-
+```php
     $db = \DB::connection('sphinx');
+```
 
 **Using The Query Builder**
 
-```PHP
+```php
 $users = $db->table('rt')->where('votes', '>', 100)->get();
 ```
 
 **Using The Eloquent ORM**
 
-```PHP
+```php
 class Product extends \Fobia\Database\SphinxConnection\Eloquent\Model {} 
 
 $product = Product::find(1);
@@ -72,35 +75,36 @@ $products = Product::match('name', 'match text')->get();
 ```
 
 **Attribute Casting**
-Для результатов столбцов `attr_multi` можно указать формат, который конвертируется в масив.
+For the results of the column `attr_multi` can choose the format, which is converted to an array.
 
-Значение `'(1, 2, 3)'` колонки `attr_multi` конвертируется в масив `[1, 2, 3]` 
+The values of `'(1, 2, 3)'` for column type `attr_multi` converted to an array `[1, 2, 3]` 
 
-```PHP
+```php
 class Product extends \Fobia\Database\SphinxConnection\Eloquent\Model 
 {
     protected $casts = [
         'tags' => 'mva',
     ];
 }
-//
 ```
 
 
 ### Query Builder
 
+```php
     $sq = $db->table('rt');
+```
 
-При построении запроса используется строгая типизация значений (как и в SphinxQl). 
-Поэтому `id = 1` и `id = '1'` не одно и тоже
+For the build a query, using strong typing of values (how in SphinxQl). 
+> Notice: `id = 1` and `id = '1'` not the same
 
-* __integer__ используется для типом integer `attr_uint`
+* __integer__ It is used to type integer `attr_uint`
  
-* __float__ используется для типом float `attr_float`
+* __float__ It is used to type float `attr_float`
 
-* __bool__ (integer) используется для типом bool `attr_bool`, будут преобразованы в integer (0 либо 1)
+* __bool__ (integer) It is used to type bool `attr_bool`, will be converted to integer (0 or 1)
 
-* __array__ (MVA) используется для вставки типом MVA `attr_multi`
+* __array__ (MVA) It is used to type MVA `attr_multi`
 
     ```php
     $sq->insert([
@@ -110,7 +114,7 @@ class Product extends \Fobia\Database\SphinxConnection\Eloquent\Model
     // INSERT INTO rt (id, tags) VALUES(1, (1, 2, 3))
    ```
 
-* __string__ - для строковых значений, экранируются при запросе
+* __string__ - string values, escaped when requested
     ```php
     $sq->insert([
         'id' => 1,
@@ -136,7 +140,8 @@ class Product extends \Fobia\Database\SphinxConnection\Eloquent\Model
           $m->not('text');
     });
     ```
-    В качестве функции поиска `match` используется библиотека [SphinxQL::match](https://github.com/FoolCode/SphinxQL-Query-Builder#match) 
+
+    For a function `match` used library [SphinxQL::match](https://github.com/FoolCode/SphinxQL-Query-Builder#match) 
 
 
 #### WITHIN GROUP, ORDER, OPTION
@@ -164,26 +169,26 @@ class Product extends \Fobia\Database\SphinxConnection\Eloquent\Model
 
 * __$sq->whereMulti($column, $operator, $values)__
 
-    Все параметры преобразуются в плоский масив
-    
+    All parameters converted to a flat array
     ```php
     $sq->whereMulti('id', '=', [1, 2, 3, [4, 5]]);
-    // WHERE id = 1 and id = 2 and id = 3 and id = 4 and id = 5
+    // Output: WHERE id = 1 and id = 2 and id = 3 and id = 4 and id = 5
     ```
     
-    Для `in` и `not in` выглядит иначе 
+
+    For the `in` and `not in` is different
     ```php
     $sq->whereMulti('id', 'in', [1, 2, 3]);
-    // WHERE id in (1) and id in (2) and id in (3) 
+    // Output: WHERE id in (1) and id in (2) and id in (3) 
     ```
     
     ```php
     $sq->whereMulti('id', 'in', [1, [20, 21], [30, 31]]);
-    // WHERE id in (1) and id in (20, 21) and id in (30, 31) 
+    // Output: WHERE id in (1) and id in (20, 21) and id in (30, 31) 
   
-    // Эквивалентно
+    // Equivalently
     $sq->whereMulti('id', 'in', 1, [20, 21], [30, 31]);
-    // WHERE id in (1) and id in (20, 21) and id in (30, 31) 
+    // Output: WHERE id in (1) and id in (20, 21) and id in (30, 31) 
     ```
 
 #### Replace
