@@ -96,7 +96,7 @@ class Product extends \Fobia\Database\SphinxConnection\Eloquent\Model
 ```
 
 For the build a query, using strong typing of values (how in SphinxQl). 
-> Notice: `id = 1` and `id = '1'` not the same
+> Notice: __`id = 1`__ and __`id = '1'`__ not the same
 
 * __integer__ It is used to type integer `attr_uint`
  
@@ -111,7 +111,7 @@ For the build a query, using strong typing of values (how in SphinxQl).
         'id' => 1,
         'tags' => [1, 2, 3]
     ]);
-    // INSERT INTO rt (id, tags) VALUES(1, (1, 2, 3))
+    // Output: INSERT INTO rt (id, tags) VALUES(1, (1, 2, 3))
    ```
 
 * __string__ - string values, escaped when requested
@@ -120,7 +120,7 @@ For the build a query, using strong typing of values (how in SphinxQl).
         'id' => 1,
         'name' => "name 'text'"
     ]);
-    // INSERT INTO rt (id, name) VALUES(1, 'name \'text\'')
+    // Output: INSERT INTO rt (id, name) VALUES(1, 'name \'text\'')
    ```
 
 
