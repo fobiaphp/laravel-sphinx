@@ -10,7 +10,6 @@ namespace Fobia\Database\SphinxConnection;
 
 use Illuminate\Database\Connectors\MySqlConnector;
 
-
 /**
  * Class SphinxConnector
  * @ignore

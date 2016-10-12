@@ -23,18 +23,23 @@ class GrammarTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Grammar::wrap
-     * @todo   Implement testWrap().
      */
     public function testWrap()
     {
         $m = new \ReflectionMethod(Grammar::class, 'wrap');
         $m->setAccessible(true);
-        $this->assertEquals('column', $m->invoke($this->object, 'column'));
+        $wrap = function($value, $prefixAlias = false) use ($m) {
+            return $m->invokeArgs($this->object, [$value, $prefixAlias]);
+        };
 
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('col', $wrap('col'));
+        // TODO: please fixme
+        $this->assertEquals('col2', $wrap('col1.col2'));
+        $this->assertEquals('col2.col3', $wrap('col1.col2.col3'));
+
+        // TODO: please fixme
+        $this->assertEquals('col2[0]', $wrap('col1.col2[0]'));
+        $this->assertEquals('col2[0].col3', $wrap('col1.col2[0].col3'));
     }
 
     /**

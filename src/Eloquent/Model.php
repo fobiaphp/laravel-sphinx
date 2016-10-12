@@ -11,14 +11,13 @@ namespace Fobia\Database\SphinxConnection\Eloquent;
 use Fobia\Database\SphinxConnection\Eloquent\Query\Builder as QueryBuilder;
 use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar as QueryGrammar;
 
-
 /**
  * App\Lib\Database\Eloquent\Model
  *
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder match($column, $value = null, $half = false)   Созвучный поиск.
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder withinGroupOrderBy($column, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMulti($column, $operator, $values) равенство в список.
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder options($name, $value) Опции запроса [OPTION].
+ * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder option($name, $value) Опции запроса [OPTION].
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facet($callback) Конструкция запроса [FACET].
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
@@ -104,7 +103,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
     protected function asMva($value)
     {
-        if (is_string($value) || is_numeric($value) ) {
+        if (is_string($value) || is_numeric($value)) {
             $value = preg_replace('/[\(\)\s]/', '', $value);
             if (strlen($value)) {
                 $value = explode(',', $value);
@@ -170,6 +169,11 @@ class Model extends \Illuminate\Database\Eloquent\Model
         $grammar = new QueryGrammar;
 
         return new QueryBuilder($conn, $grammar, $conn->getPostProcessor());
+    }
+
+    protected function getKeyForSaveQuery()
+    {
+        return (int) parent::getKeyForSaveQuery();
     }
 
     public function getConnection()

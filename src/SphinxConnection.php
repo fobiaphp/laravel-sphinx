@@ -14,7 +14,6 @@ use Foolz\SphinxQL\Helper;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\MySqlConnection;
 
-
 /**
  * Class SphinxConnection
  *
@@ -126,7 +125,10 @@ class SphinxConnection extends MySqlConnection
      */
     public function query()
     {
-        return new \Fobia\Database\SphinxConnection\Eloquent\Query\Builder($this, $this->getQueryGrammar(),
-            $this->getPostProcessor());
+        return new \Fobia\Database\SphinxConnection\Eloquent\Query\Builder(
+            $this,
+            $this->getQueryGrammar(),
+            $this->getPostProcessor()
+        );
     }
 }
