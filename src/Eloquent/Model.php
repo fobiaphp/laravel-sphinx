@@ -36,24 +36,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
     public $timestamps = false;
     public $incrementing = false;
 
-    /**
-     * Create a new Eloquent model instance.
-     *
-     * @param  array $attributes
-     */
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    //public function newCollection(array $models = [])
-    //{
-    //    return new Collection($models);
-    //}
-
     /*
      * ===================
      * Main scopes
