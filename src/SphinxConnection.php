@@ -75,32 +75,6 @@ class SphinxConnection extends MySqlConnection
     }
 
     /**
-     * Run a select statement against the database.
-     *
-     * @param  string $query
-     * @param  array $bindings
-     * @param  bool $useReadPdo
-     * @return array
-     */
-    public function select($query, $bindings = [], $useReadPdo = true)
-    {
-        return $this->run($query, $bindings, function ($me, $query, $bindings) use ($useReadPdo) {
-            if ($me->pretending()) {
-                return [];
-            }
-
-            // For select statements, we'll simply execute the query and return an array
-            // of the database result set. Each element in the array will be a single
-            // row from the database table, and will either be an array or objects.
-            $statement = $this->getPdoForSelect($useReadPdo)->prepare($query);
-
-            $statement->execute($me->prepareBindings($bindings));
-
-            return $statement->fetchAll($me->getFetchMode());
-        });
-    }
-
-    /**
      * Get the default query grammar instance.
      *
      * @return \Fobia\Database\SphinxConnection\Eloquent\Query\Grammar
