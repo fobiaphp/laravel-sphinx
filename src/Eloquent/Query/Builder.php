@@ -24,7 +24,7 @@ class Builder extends QueryBuilder
      *
      * @var array
      */
-    protected $bindings = [
+    public $bindings = [
         'select' => [],
         'join' => [],
         'where' => [],
