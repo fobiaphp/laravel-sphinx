@@ -11,7 +11,7 @@ class BuilderTest extends TestCase
     /**
      * @var Builder
      */
-    protected $q;
+    public $q;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
