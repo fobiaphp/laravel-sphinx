@@ -39,7 +39,7 @@ install:
   - $HOME/sphinx/usr/bin/searchd -c tests/fixtures/sphinx.conf
 
 script:
-  - phpunit --coverage-text
+  - ./vendor/bin/phpunit --coverage-text
 
 notifications:
   email: false
