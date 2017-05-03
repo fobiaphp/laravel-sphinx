@@ -28,11 +28,11 @@ class SphinxServiceProvider extends ServiceProvider
         $this->app->bind("db.connector.sphinx", SphinxConnector::class);
 
         // Add database driver.
-        $this->app->resolving('db', function ($db) {
-            $db->extend('sphinx', function ($config, $name) {
-                $config['name'] = $name;
-                return new SphinxConnection($config);
-            });
-        });
+        // $this->app->resolving('db', function ($db) {
+        //     $db->extend('sphinx', function ($config, $name) {
+        //         $config['name'] = $name;
+        //         return new SphinxConnection($config);
+        //     });
+        // });
     }
 }
