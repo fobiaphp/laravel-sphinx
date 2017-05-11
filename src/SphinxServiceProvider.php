@@ -6,6 +6,7 @@
 
 namespace Fobia\Database\SphinxConnection;
 
+use Illuminate\Database\Connection;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -26,5 +27,11 @@ class SphinxServiceProvider extends ServiceProvider
     {
         $this->app->bind("db.connection.sphinx", SphinxConnection::class);
         $this->app->bind("db.connector.sphinx", SphinxConnector::class);
+
+        if (class_exists(Connection::class) && method_exists(Connection::class, 'resolverFor')) {
+            Connection::resolverFor('sphinx', function ($connection, $database, $prefix, $config) {
+                return new SphinxConnection($connection, $database, $prefix, $config);
+            });
+        }
     }
 }
