@@ -225,7 +225,7 @@ class Grammar extends BaseGrammar
         $where = parent::compileWheres($query);
         // If SphinxQL generator
         if (!empty($query->match)) {
-            $where = ' AND ' . substr($where, 5);
+            $where = (empty($where) ? '' : ' AND ') . substr($where, 5);
         }
         return $where;
     }

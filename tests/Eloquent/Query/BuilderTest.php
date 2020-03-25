@@ -11,7 +11,7 @@ class BuilderTest extends TestCase
     /**
      * @var Builder
      */
-    protected $q;
+    public $q;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -78,7 +78,9 @@ class BuilderTest extends TestCase
      */
     public function tearDown()
     {
-        $this->db->statement("TRUNCATE RTINDEX rt");
+        if ($this->db) {
+            $this->db->statement("TRUNCATE RTINDEX rt");
+        }
         parent::tearDown();
     }
 
