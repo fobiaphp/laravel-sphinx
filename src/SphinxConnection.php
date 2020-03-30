@@ -43,7 +43,7 @@ class SphinxConnection extends MySqlConnection
      */
     public function getSphinxQLHelper()
     {
-        return Helper::create($this->getSphinxQLDriversConnection());
+        return new Helper($this->getSphinxQLDriversConnection());
     }
 
     /**
@@ -51,7 +51,7 @@ class SphinxConnection extends MySqlConnection
      */
     public function createSphinxQL()
     {
-        return SphinxQL::create($this->getSphinxQLDriversConnection());
+        return new SphinxQL($this->getSphinxQLDriversConnection());
     }
 
     /**
@@ -59,7 +59,7 @@ class SphinxConnection extends MySqlConnection
      */
     public function createFacet()
     {
-        return Facet::create($this->getSphinxQLDriversConnection());
+        return new Facet($this->getSphinxQLDriversConnection());
     }
 
     /**

@@ -35,7 +35,7 @@ class SphinxQLDriversConnection extends ConnectionBase
      *******************/
 
 
-    public function connect($suppress_error = false)
+    public function connect()
     {
         return !empty($this->connection);
     }

@@ -10,15 +10,16 @@ namespace Fobia\Database\SphinxConnection\Eloquent;
 
 use Fobia\Database\SphinxConnection\Eloquent\Query\Builder as QueryBuilder;
 use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar as QueryGrammar;
+use Illuminate\Support\Arr;
 
 /**
  * App\Lib\Database\Eloquent\Model
  *
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder match($column, $value = null, $half = false)   Созвучный поиск.
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder withinGroupOrderBy($column, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder whereMulti($column, $operator, $values) равенство в список.
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder option($name, $value) Опции запроса [OPTION].
- * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facet($callback) Конструкция запроса [FACET].
+ * @method static QueryBuilder match($column, $value = null, $half = false)   Созвучный поиск.
+ * @method static QueryBuilder withinGroupOrderBy($column, $asc = 'ASC')  Конструкция [WITHIN GROUP ORDER BY].
+ * @method static QueryBuilder whereMulti($column, $operator, $values) равенство в список.
+ * @method static QueryBuilder option($name, $value) Опции запроса [OPTION].
+ * @method static QueryBuilder facet($callback) Конструкция запроса [FACET].
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2020 Dmitriy Tyurin
@@ -56,8 +57,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
      */
     protected function filterParamsUint($args)
     {
-
-        $args = array_flatten((array) $args);
+        $args = Arr::flatten((array) $args);
         $args = array_filter((array) $args, function ($v) {
             return (($v !== null) && ($v !== ''));
         });
@@ -74,11 +74,10 @@ class Model extends \Illuminate\Database\Eloquent\Model
      * @param string $name название поля
      * @return array
      */
-    protected function getMvaAttribute($name)
+    protected function getMvaAttribute($name): array
     {
         if (isset($this->attributes[$name]) && $this->attributes[$name] != '') {
-            $value = $this->asMva($this->attributes[$name]);
-            return $value;
+            return $this->asMva($this->attributes[$name]);
         }
         return [];
     }
@@ -106,7 +105,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     protected function castAttribute($key, $value)
     {
         if (is_null($value)) {
-            return $value;
+            return null;
         }
 
         switch ($this->getCastType($key)) {

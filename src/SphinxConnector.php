@@ -26,7 +26,7 @@ class SphinxConnector extends MySqlConnector
         $defaultConfig = [
             'host' => '127.0.0.1',
             'port' => 9306,
-            'database' => null,
+            'database' => '', // null,
             'username' => '',
             // 'password' => '',
             'charset' => 'utf8',
