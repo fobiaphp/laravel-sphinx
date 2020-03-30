@@ -112,7 +112,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('database.connections.sphinx', [
             'driver' => 'sphinx',
             'host' => '127.0.0.1',
-            'port' => getenv('SPHINX_PORT') ?: 41306,
+            'port' => getenv('SPHINX_PORT') ?: 9306,
             'database' => null, // 'SphinxRT',
             'username' => '',
             // 'password' => '',
