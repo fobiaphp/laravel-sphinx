@@ -3,7 +3,7 @@
  * SphinxConnection.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection;
@@ -18,7 +18,7 @@ use Illuminate\Database\MySqlConnection;
  * Class SphinxConnection
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class SphinxConnection extends MySqlConnection
 {

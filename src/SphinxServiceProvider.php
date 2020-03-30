@@ -1,7 +1,7 @@
 <?php
 /**
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection;
@@ -13,7 +13,7 @@ use Illuminate\Support\ServiceProvider;
  * Class SphinxServiceProvider
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class SphinxServiceProvider extends ServiceProvider
 {

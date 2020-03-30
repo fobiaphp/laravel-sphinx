@@ -3,7 +3,7 @@
  * Model.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection\Eloquent;
@@ -21,7 +21,7 @@ use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar as QueryGrammar;
  * @method static \Fobia\Database\SphinxConnection\Eloquent\Query\Builder facet($callback) Конструкция запроса [FACET].
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class Model extends \Illuminate\Database\Eloquent\Model
 {
