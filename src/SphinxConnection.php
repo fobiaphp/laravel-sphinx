@@ -3,7 +3,7 @@
  * SphinxConnection.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection;
@@ -18,7 +18,7 @@ use Illuminate\Database\MySqlConnection;
  * Class SphinxConnection
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class SphinxConnection extends MySqlConnection
 {
@@ -43,7 +43,7 @@ class SphinxConnection extends MySqlConnection
      */
     public function getSphinxQLHelper()
     {
-        return Helper::create($this->getSphinxQLDriversConnection());
+        return new Helper($this->getSphinxQLDriversConnection());
     }
 
     /**
@@ -51,7 +51,7 @@ class SphinxConnection extends MySqlConnection
      */
     public function createSphinxQL()
     {
-        return SphinxQL::create($this->getSphinxQLDriversConnection());
+        return new SphinxQL($this->getSphinxQLDriversConnection());
     }
 
     /**
@@ -59,7 +59,7 @@ class SphinxConnection extends MySqlConnection
      */
     public function createFacet()
     {
-        return Facet::create($this->getSphinxQLDriversConnection());
+        return new Facet($this->getSphinxQLDriversConnection());
     }
 
     /**

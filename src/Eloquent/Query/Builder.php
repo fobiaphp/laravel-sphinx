@@ -3,19 +3,20 @@
  * Builder.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
 use Foolz\SphinxQL\Facet;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Arr;
 
 /**
  * Class Builder
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class Builder extends QueryBuilder
 {
@@ -296,7 +297,7 @@ class Builder extends QueryBuilder
             if (!$callback instanceof \Closure) {
                 throw new \Exception("Not Facet");
             }
-            $facet = Facet::create($this->getConnection()->getSphinxQLDriversConnection());
+            $facet = new Facet($this->getConnection()->getSphinxQLDriversConnection());
             $callback($facet);
         } else {
             $facet = $callback;
@@ -320,7 +321,7 @@ class Builder extends QueryBuilder
      */
     protected function filterParamsUint($args)
     {
-        $args = array_flatten((array) $args);
+        $args = Arr::flatten((array) $args);
         $args = array_filter((array) $args, function ($v) {
             return (($v !== null) && ($v !== ''));
         });

@@ -3,7 +3,7 @@
  * SphinxConnectionTest.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection\Test;
@@ -16,7 +16,7 @@ use Illuminate\Database\Connection;
 
 class SphinxConnectionTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpDatabase();

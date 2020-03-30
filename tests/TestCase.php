@@ -71,7 +71,7 @@ abstract class TestCase extends Orchestra
 
     // =============================================
 
-    public function setUp()
+    protected function setUp(): void
     {
         if ($this->traceLog === null) {
             $this->traceLog = (bool) getenv('TRACE_QUERY_LOG');
@@ -79,7 +79,7 @@ abstract class TestCase extends Orchestra
         parent::setUp();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         if (!empty($this->db)) {
             $this->db->flushQueryLog();

@@ -5,16 +5,16 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "foolz/sphinxql-query-builder": "^1.0"
+        "php": ">=7.2",
+        "foolz/sphinxql-query-builder": "^2.0"
     },
     "require-dev": {
-        "illuminate/bus": "~5.2.0|~5.3.0|~5.4.0",
-        "illuminate/database": "~5.2.0|~5.3.0|~5.4.0",
-        "illuminate/support": "~5.2.0|~5.3.0|~5.4.0",
-        "symfony/filesystem": "^3.0",
-        "orchestra/testbench": "~3.1",
-        "phpunit/phpunit": "~5.5"
+        "illuminate/bus": "^6.0|^7.0",
+        "illuminate/database": "^6.0|^7.0",
+        "illuminate/support": "^6.0|^7.0",
+        "symfony/filesystem": "^4.0|^5.0",
+        "orchestra/testbench": "^4.0|^5.0",
+        "phpunit/phpunit": "^8.5"
     },
     "suggest": {
         "laravel/framework": "The Laravel Framework",
@@ -28,6 +28,20 @@
     "autoload-dev": {
         "psr-4": {
             "Fobia\\Database\\SphinxConnection\\Test\\": "tests/"
+        }
+    },
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Fobia\\Database\\SphinxConnection\\SphinxServiceProvider"
+            ],
+            "aliases": {
+                "Debugbar": "Fobia\\Database\\SphinxConnection\\Facade"
+            }
         }
     }
 }

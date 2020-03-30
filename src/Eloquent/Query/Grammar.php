@@ -3,7 +3,7 @@
  * Grammar.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
@@ -17,7 +17,7 @@ use Illuminate\Database\Query\Builder as BaseBuilder;
  * Class Grammar
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class Grammar extends BaseGrammar
 {

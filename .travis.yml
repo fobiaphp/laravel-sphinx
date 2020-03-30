@@ -3,40 +3,31 @@ language: php
 sudo: true
 
 php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - hhvm
+  - 7.2
+  - 7.3
 
 env:
   global:
     - DRIVER=pdo
-    - SPHINXSEARCH_BUILD=rel22
-    - SPHINX_PORT=9307
+    - SPHINX_PORT=9306
   matrix:
-    - USE_LARAVEL_VERSION=5.2.0
-    - USE_LARAVEL_VERSION=5.3.0
-    - USE_LARAVEL_VERSION=5.4.0
+    - USE_LARAVEL_VERSION=6.0
+    - USE_LARAVEL_VERSION=7.0
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: hhvm
 
 before_install:
-  - mkdir $HOME/sphinx
-  - pushd $HOME/sphinx
-  - wget --quiet http://ppa.launchpad.net/builds/sphinxsearch-${SPHINXSEARCH_BUILD}/ubuntu/dists/`lsb_release -cs`/main/binary-amd64/Packages.gz
-  - gzip -d Packages.gz
-  - SPHINX_DEB=`grep -m1 Filename Packages | cut -f2 -d' '`
-  - wget --quiet -O sphinxsearch.deb http://ppa.launchpad.net/builds/sphinxsearch-${SPHINXSEARCH_BUILD}/ubuntu/${SPHINX_DEB}
-  - dpkg -x sphinxsearch.deb .
+  - mkdir $HOME/manticore
+  - pushd $HOME/manticore
+  - wget -O manticore.deb --quiet https://github.com/manticoresoftware/manticoresearch/releases/download/3.4.0/manticore_3.4.0-200326-0686d9f-release.xenial_amd64-bin.deb
+  - dpkg -x manticore.deb .
   - popd
 
 install:
-  - composer require "illuminate/bus:~${USE_LARAVEL_VERSION}"
+  - $HOME/manticore/usr/bin/searchd -c tests/fixtures/sphinx.conf
+  - composer require "illuminate/bus:^${USE_LARAVEL_VERSION}"
   - composer install --prefer-dist
-  - $HOME/sphinx/usr/bin/searchd -c tests/fixtures/sphinx.conf
 
 script:
   - ./vendor/bin/phpunit --coverage-text

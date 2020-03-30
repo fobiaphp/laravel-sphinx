@@ -3,7 +3,7 @@
  * Connection.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
 namespace Fobia\Database\SphinxConnection;
@@ -14,7 +14,7 @@ use Foolz\SphinxQL\Drivers\Pdo\Connection as ConnectionBase;
  * Class Connection
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 class SphinxQLDriversConnection extends ConnectionBase
 {
@@ -35,7 +35,7 @@ class SphinxQLDriversConnection extends ConnectionBase
      *******************/
 
 
-    public function connect($suppress_error = false)
+    public function connect()
     {
         return !empty($this->connection);
     }

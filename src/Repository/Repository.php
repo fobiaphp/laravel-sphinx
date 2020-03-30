@@ -3,10 +3,10 @@
  * Repository.php file
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 
-namespace Fobia\Database\SphinxConnection;
+namespace Fobia\Database\SphinxConnection\Repository;
 
 use Illuminate\Support\Facades\Config;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -15,7 +15,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  * Class Repository
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
- * @copyright  Copyright (c) 2016 Dmitriy Tyurin
+ * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
 abstract class Repository extends BaseRepository
 {
