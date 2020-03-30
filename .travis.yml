@@ -21,6 +21,7 @@ matrix:
     - php: hhvm
 
 before_install:
+  - mkdir -p /var/lib/manticore /var/log/manticore /var/run/manticore
   - mkdir $HOME/manticore
   - pushd $HOME/manticore
   - wget -O manticore.deb --quiet https://github.com/manticoresoftware/manticoresearch/releases/download/3.4.0/manticore_3.4.0-200326-0686d9f-release.xenial_amd64-bin.deb
