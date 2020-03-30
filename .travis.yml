@@ -28,9 +28,9 @@ before_install:
   - popd
 
 install:
+  - $HOME/manticore/usr/bin/searchd -c tests/fixtures/sphinx.conf
   - composer require "illuminate/bus:^${USE_LARAVEL_VERSION}"
   - composer install --prefer-dist
-  - $HOME/manticore/usr/bin/searchd -c tests/fixtures/sphinx.conf
 
 script:
   - ./vendor/bin/phpunit --coverage-text
