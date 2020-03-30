@@ -16,7 +16,7 @@ use Illuminate\Database\Connection;
 
 class SphinxConnectionTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpDatabase();

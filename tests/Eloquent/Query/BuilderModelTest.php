@@ -15,14 +15,16 @@ class BuilderModelTest extends BuilderTest
     /**
      * @todo   Implement testReplace().
      */
-    public function testReplace()
-    {
-        // skeep
-        return true;
-    }
+    // public function testReplace()
+    // {
+    //     // skeep
+    //     return true;
+    // }
 
     public function testSave()
     {
+        ModelRt::where('id', '=', 1)->delete();
+
         $this->q->insert([
             'id' => 1,
             'gid' => 1,

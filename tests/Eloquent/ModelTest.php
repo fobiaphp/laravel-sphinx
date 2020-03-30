@@ -41,7 +41,7 @@ class ModelTest extends TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -59,7 +59,7 @@ class ModelTest extends TestCase
      */
     public function testGetMvaAttribute()
     {
-        $this->assertInternalType('array', $this->object->tags_mutator);
+        $this->assertIsArray($this->object->tags_mutator);
     }
 
     /**
@@ -70,7 +70,7 @@ class ModelTest extends TestCase
         $method = new \ReflectionMethod($this->object, 'asMva');
         $method->setAccessible(true);
 
-        $this->assertInternalType('array', $this->object->tags);
+        $this->assertIsArray($this->object->tags);
         $this->assertNotEmpty(array_filter($this->object->tags, 'is_int'));
         $this->assertArrayHasKey(0, $this->object->tags);
     }
@@ -84,7 +84,7 @@ class ModelTest extends TestCase
         $method = new \ReflectionMethod($this->object, 'asMva');
         $method->setAccessible(true);
 
-        $this->assertInternalType('array', $method->invoke($this->object, $val));
+        $this->assertIsArray($method->invoke($this->object, $val));
         $this->assertEquals($expected, $method->invoke($this->object, $val));
 
     }
