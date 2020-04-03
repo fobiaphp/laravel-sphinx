@@ -16,7 +16,7 @@ use Foolz\SphinxQL\Drivers\Pdo\Connection as ConnectionBase;
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
  * @copyright  Copyright (c) 2020 Dmitriy Tyurin
  */
-class SphinxQLDriversConnection extends ConnectionBase
+class SphinxQLDriverConnection extends ConnectionBase
 {
 
     /**

@@ -3,6 +3,7 @@ namespace Fobia\Database\SphinxConnection\Test\Eloquent;
 
 use Fobia\Database\SphinxConnection\Eloquent\Model;
 use Fobia\Database\SphinxConnection\Test\TestCase;
+use Illuminate\Support\Facades\DB;
 
 class ModelMock extends Model
 {

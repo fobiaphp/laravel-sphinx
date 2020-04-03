@@ -234,15 +234,6 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @deprecated
-     */
-    public function options($name, $value)
-    {
-        return $this->option($name, $value);
-    }
-
-
-    /**
      * WITHIN GROUP ORDER BY clause (SphinxQL-specific)
      * Adds to the previously added columns
      * Works just like a classic ORDER BY

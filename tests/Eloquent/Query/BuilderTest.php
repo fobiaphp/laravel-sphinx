@@ -350,6 +350,12 @@ class BuilderTest extends TestCase
      */
     public function testMatch()
     {
+        $q = $this->q->match(null);
+        $this->assertQuery("select * FROM rt WHERE MATCH('')", $q);
+
+        $q = $this->q->match('');
+        $this->assertQuery("select * FROM rt WHERE MATCH('')", $q);
+
         $q = $this->q->match('text match');
         $this->assertQuery("select * FROM rt WHERE MATCH('(@text match)')", $q);
 
@@ -369,6 +375,15 @@ class BuilderTest extends TestCase
             $m->match('match');
         });
         $this->assertQuery("select * FROM rt WHERE MATCH('(@name match)')", $q);
+    }
+    /**
+     * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::match
+     */
+    public function testMatch2()
+    {
+        $q = $this->q->match(1);
+        $sql = $q->toSql();
+        $this->assertQuery("select * FROM rt WHERE MATCH('')", $q);
     }
 
     /**

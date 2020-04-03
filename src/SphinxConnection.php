@@ -23,17 +23,17 @@ use Illuminate\Database\MySqlConnection;
 class SphinxConnection extends MySqlConnection
 {
     /**
-     * @var \Fobia\Database\SphinxConnection\SphinxQLDriversConnection
+     * @var \Fobia\Database\SphinxConnection\SphinxQLDriverConnection
      */
     protected $sphinxQLConnection;
 
     /**
-     * @return \Fobia\Database\SphinxConnection\SphinxQLDriversConnection
+     * @return \Fobia\Database\SphinxConnection\SphinxQLDriverConnection
      */
     public function getSphinxQLDriversConnection()
     {
         if (null === $this->sphinxQLConnection) {
-            $this->sphinxQLConnection = new SphinxQLDriversConnection($this->getPdo());
+            $this->sphinxQLConnection = new SphinxQLDriverConnection($this->getPdo());
         }
         return $this->sphinxQLConnection;
     }

@@ -200,6 +200,9 @@ class Grammar extends BaseGrammar
                 } elseif (is_array($match['column'])) {
                     $pre .= '@(' . implode(',', $match['column']) . ') ';
                 } else {
+                    if (is_numeric($match['column'])) {
+                        $match['column'] = '"' . $match['column'] . '"';
+                    }
                     $pre .= '@' . $match['column'] . ' ';
                 }
 
@@ -208,8 +211,9 @@ class Grammar extends BaseGrammar
                 } else {
                     $pre .= $sphinxQL->escapeMatch($match['value']);
                 }
-
-                $matched[] = '(' . $pre . ')';
+                if ($pre) {
+                    $matched[] = '(' . $pre . ')';
+                }
             }
 
             $matched = implode(' ', $matched);
