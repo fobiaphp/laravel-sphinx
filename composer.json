@@ -18,7 +18,8 @@
         "phpunit/phpunit": "^8.5"
     },
     "suggest": {
-        "laravel/framework": "The Laravel Framework"
+        "laravel/framework": "The Laravel Framework",
+        "laravel/scout": "The Laravel scout"
     },
     "autoload": {
         "psr-4": {
