@@ -8,7 +8,6 @@
 
 namespace Fobia\Database\SphinxConnection;
 
-use Closure;
 use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Helper;
 use Foolz\SphinxQL\SphinxQL;

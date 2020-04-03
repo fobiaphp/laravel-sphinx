@@ -5,7 +5,6 @@
 
 namespace Fobia\Database\SphinxConnection;
 
-
 use Illuminate\Support\Collection;
 
 /**

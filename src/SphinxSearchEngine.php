@@ -5,7 +5,6 @@
 
 namespace Fobia\Database\SphinxConnection;
 
-use Fobia\Database\SphinxConnection\Eloquent;
 use Foolz\SphinxQL\Exception\ConnectionException;
 use Foolz\SphinxQL\Exception\DatabaseException;
 use Foolz\SphinxQL\Match;
@@ -241,7 +240,7 @@ class SphinxSearchEngine extends Engine
                 $query->match($searchQuery);
             } elseif ($searchQuery instanceof \Illuminate\Database\Query\Expression) {
                 $query->match($searchQuery->getValue());
-                // } elseif ($searchQuery instanceof \Minimalcode\Search\Criteria) {
+            // } elseif ($searchQuery instanceof \Minimalcode\Search\Criteria) {
                 //     $searchQuery = $searchQuery->getQuery();
             } else {
                 if ($searchQuery && is_string($searchQuery)) {

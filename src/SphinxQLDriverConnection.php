@@ -18,7 +18,6 @@ use Foolz\SphinxQL\Drivers\Pdo\Connection as ConnectionBase;
  */
 class SphinxQLDriverConnection extends ConnectionBase
 {
-
     /**
      * Connection constructor.
      *
@@ -29,11 +28,9 @@ class SphinxQLDriverConnection extends ConnectionBase
         $this->connection = $pdo;
     }
 
-
     /*******************
      * Override Methods
      *******************/
-
 
     public function connect()
     {

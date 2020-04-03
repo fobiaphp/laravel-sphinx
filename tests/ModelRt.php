@@ -10,11 +10,10 @@ namespace Fobia\Database\SphinxConnection\Test;
 
 use Fobia\Database\SphinxConnection\Eloquent\Model as BaseModel;
 
-
 /**
  * Class Model
  *
- * @property integer $id                Institution address_id
+ * @property int $id                Institution address_id
  * @property string $name               Institution name
  *
  * @author     Dmitriy Tyurin <fobia3d@gmail.com>
@@ -32,12 +31,12 @@ class ModelRt extends BaseModel
         'greal',
         'gbool',
         'tags',
-        'factors'
+        'factors',
     ];
 
     protected $guarded = ['*'];
 
-    protected $appends = [ ];
+    protected $appends = [];
 
     /**
      * The attributes that should be casted to native types.

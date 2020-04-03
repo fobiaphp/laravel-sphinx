@@ -40,7 +40,7 @@ class BuilderModelTest extends BuilderTest
         $model = ModelRt::find(1);
         $this->assertEquals(10, (int) $model->gid);
 
-        $model->tags = [ 10 ];
+        $model->tags = [10];
         $model->save();
 
         $model = ModelRt::find(1);
@@ -70,5 +70,4 @@ class BuilderModelTest extends BuilderTest
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertInstanceOf(ModelRt::class, $result->first());
     }
-
 }

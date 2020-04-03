@@ -31,7 +31,7 @@ abstract class Repository extends BaseRepository
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function paginate($perPage = null, $columns = ['*'])
     {
@@ -42,7 +42,6 @@ abstract class Repository extends BaseRepository
         $this->applyCriteria();
         return $this->model->paginate($perPage, $columns);
     }
-
 
     public function returnPaginate($params)
     {
