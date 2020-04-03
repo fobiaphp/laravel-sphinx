@@ -121,9 +121,9 @@ abstract class TestCase extends Orchestra
             'database' => null, // 'SphinxRT',
             'username' => '',
             // 'password' => '',
-            'charset' => 'utf8',
-            'prefix' => '',
-            'collation' => null,
+            // 'charset' => 'utf8',
+            // 'prefix' => '',
+            // 'collation' => null,
         ]);
 
         $app->bind('path.public', function () {
