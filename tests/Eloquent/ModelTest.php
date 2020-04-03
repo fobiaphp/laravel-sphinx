@@ -1,4 +1,5 @@
 <?php
+
 namespace Fobia\Database\SphinxConnection\Test\Eloquent;
 
 use Fobia\Database\SphinxConnection\Eloquent\Model;
@@ -13,7 +14,7 @@ class ModelMock extends Model
         'name',
         'gid',
         'tags',
-        'factors'
+        'factors',
     ];
 
     protected $casts = [
@@ -50,7 +51,7 @@ class ModelTest extends TestCase
             'name' => 'model name',
             'gid' => '12',
             'tags' => '(1, 2, 3)',
-            'factors' => json_encode(['var' => 'value'])
+            'factors' => json_encode(['var' => 'value']),
         ]);
     }
 
@@ -86,7 +87,6 @@ class ModelTest extends TestCase
 
         $this->assertIsArray($method->invoke($this->object, $val));
         $this->assertEquals($expected, $method->invoke($this->object, $val));
-
     }
 
     public function asMvaDataProvider()
@@ -97,9 +97,9 @@ class ModelTest extends TestCase
             [0, [0]],
             ['0', [0]],
             ['1', [1]],
-            ['1,2,3', [1,2,3]],
-            ['(1,2,3)', [1,2,3]],
-            [[1,2,3], [1,2,3]],
+            ['1,2,3', [1, 2, 3]],
+            ['(1,2,3)', [1, 2, 3]],
+            [[1, 2, 3], [1, 2, 3]],
         ];
     }
 }

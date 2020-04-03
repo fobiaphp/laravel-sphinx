@@ -1,4 +1,5 @@
 <?php
+
 namespace Fobia\Database\SphinxConnection\Test\Eloquent\Query;
 
 use Fobia\Database\SphinxConnection\Eloquent\Query\Grammar;
@@ -28,7 +29,7 @@ class GrammarTest extends TestCase
     {
         $m = new \ReflectionMethod(Grammar::class, 'wrap');
         $m->setAccessible(true);
-        $wrap = function($value, $prefixAlias = false) use ($m) {
+        $wrap = function ($value, $prefixAlias = false) use ($m) {
             return $m->invokeArgs($this->object, [$value, $prefixAlias]);
         };
 

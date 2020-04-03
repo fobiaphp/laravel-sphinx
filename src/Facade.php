@@ -7,7 +7,7 @@ namespace Fobia\Database\SphinxConnection;
 class Facade extends \Illuminate\Support\Facades\Facade
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected static function getFacadeAccessor()
     {

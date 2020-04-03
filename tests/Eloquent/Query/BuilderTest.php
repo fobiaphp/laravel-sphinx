@@ -1,4 +1,5 @@
 <?php
+
 namespace Fobia\Database\SphinxConnection\Test\Eloquent\Query;
 
 use Fobia\Database\SphinxConnection\Eloquent\Query\Builder;
@@ -36,37 +37,36 @@ class BuilderTest extends TestCase
     protected function seedRtTable()
     {
         $factors = [
-            "id" => 1,
-            "title"=> "some title",
-            "arr"=> [1, 2, 3],
-            "keys"=> [
-                "tag1",
-                "tag2",
-                "tag3"
+            'id' => 1,
+            'title' => 'some title',
+            'arr' => [1, 2, 3],
+            'keys' => [
+                'tag1',
+                'tag2',
+                'tag3',
             ],
-            "tags"=> [
-                "tag1",
-                "tag2",
-                "tag3" =>
-                    [
-                        "one" => "two",
-                        "three"=> [4, 5]
-                    ]
-            ]
+            'tags' => [
+                'tag1',
+                'tag2',
+                'tag3' => [
+                    'one' => 'two',
+                    'three' => [4, 5],
+                ],
+            ],
         ];
         $inserts = [];
         for ($i = 0; $i < 10; $i++) {
-            $factors["id"] = 1+ $i;
-            $factors["title"] = "some title " . (1+ $i);
+            $factors['id'] = 1 + $i;
+            $factors['title'] = 'some title ' . (1 + $i);
 
-            $inserts[] =[
+            $inserts[] = [
                 'id' => 1 + $i,
                 'name' => 'name ' . $i,
                 'tags' => $this->db->raw('(1, 2, 3)'),
                 'gid' => 1 + $i,
                 'greal' => 1.5 + $i,
                 'gbool' => true,
-                'factors' => json_encode($factors)
+                'factors' => json_encode($factors),
             ];
         }
         $this->db->table('rt')->insert($inserts);
@@ -79,7 +79,7 @@ class BuilderTest extends TestCase
     public function tearDown(): void
     {
         if ($this->db) {
-            $this->db->statement("TRUNCATE RTINDEX rt");
+            $this->db->statement('TRUNCATE RTINDEX rt');
         }
         parent::tearDown();
     }
@@ -96,7 +96,7 @@ class BuilderTest extends TestCase
     public function test_intType()
     {
         $q = $this->q->where('id', 1);
-        $this->assertQuery("select * FROM rt where id = 1", $q);
+        $this->assertQuery('select * FROM rt where id = 1', $q);
     }
 
     public function test_stringType()
@@ -108,20 +108,19 @@ class BuilderTest extends TestCase
     public function test_floatType()
     {
         $q = $this->q->where('id', 1.1);
-        $this->assertQuery("select * FROM rt where id = 1.100000", $q);
+        $this->assertQuery('select * FROM rt where id = 1.100000', $q);
     }
 
     public function test_mvaType()
     {
         $q = $this->q->where('id', [1, 2, 3]);
-        $this->assertQuery("select * FROM rt where id = (1, 2, 3)", $q);
+        $this->assertQuery('select * FROM rt where id = (1, 2, 3)', $q);
     }
-
 
     public function test_boolType()
     {
         $q = $this->q->where('id', true);
-        $this->assertQuery("select * FROM rt where id = 1", $q);
+        $this->assertQuery('select * FROM rt where id = 1', $q);
     }
 
     /**
@@ -146,10 +145,10 @@ class BuilderTest extends TestCase
     public function testSelect()
     {
         $q = $this->makeQ()->select('id');
-        $this->assertQuery("select id FROM rt", $q);
+        $this->assertQuery('select id FROM rt', $q);
 
         $q = $this->makeQ()->select('id', 'name');
-        $this->assertQuery("select id, name FROM rt", $q);
+        $this->assertQuery('select id, name FROM rt', $q);
 
         $q = $this->makeQ()->select(['*', 'id']);
         $this->assertQuery('select *, id FROM rt', $q);
@@ -158,24 +157,23 @@ class BuilderTest extends TestCase
     public function testSelectJson()
     {
         $q = $this->makeQ()->select('rt.factors.id');
-        $this->assertQuery("select factors.id FROM rt", $q);
+        $this->assertQuery('select factors.id FROM rt', $q);
 
         $q = $this->makeQ()->select('rt.factors.keys[0]');
-        $this->assertQuery("select factors.keys[0] FROM rt", $q);
+        $this->assertQuery('select factors.keys[0] FROM rt', $q);
     }
 
     public function testWhere()
     {
         $q = $this->makeQ()->where('id', 1);
-        $this->assertQuery("select * FROM rt WHERE id = 1", $q);
+        $this->assertQuery('select * FROM rt WHERE id = 1', $q);
 
         $q = $this->makeQ()->where('rt.factors.id', 1);
-        $this->assertQuery("select * FROM rt WHERE factors.id = 1", $q);
+        $this->assertQuery('select * FROM rt WHERE factors.id = 1', $q);
 
         $q = $this->makeQ()->where('rt.factors.keys[0]', 1);
-        $this->assertQuery("select * FROM rt WHERE factors.keys[0] = 1", $q);
+        $this->assertQuery('select * FROM rt WHERE factors.keys[0] = 1', $q);
     }
-
 
     public function testDelete()
     {
@@ -193,7 +191,6 @@ class BuilderTest extends TestCase
         //$q = $this->makeQ()->where('id', '1')->delete();
         //dump($q, $this->getQuery());
     }
-
 
     /**
      * @todo error
@@ -261,32 +258,35 @@ class BuilderTest extends TestCase
     public function testWhereMulti()
     {
         $q = $this->q->whereMulti('tags', '=', 1, 2, 3, '', [5, 6, 7], null);
-        $this->assertQuery("SELECT * FROM rt WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7",
-            $q);
+        $this->assertQuery(
+            'SELECT * FROM rt WHERE tags = 1 AND tags = 2 AND tags = 3 AND tags = 5 AND tags = 6 AND tags = 7',
+            $q
+        );
     }
 
     public function testWhereMultiEq()
     {
         $q = $this->makeQ()->whereMulti('id', '=', 1);
-        $this->assertQuery("SELECT * FROM rt WHERE id = 1", $q);
+        $this->assertQuery('SELECT * FROM rt WHERE id = 1', $q);
 
         $q = $this->makeQ()->whereMulti('id', '=', '', null, 1);
-        $this->assertQuery("SELECT * FROM rt WHERE id = 1", $q);
+        $this->assertQuery('SELECT * FROM rt WHERE id = 1', $q);
 
         $q = $this->makeQ()->whereMulti('id', '=', []);
-        $this->assertQuery("SELECT * FROM rt", $q);
+        $this->assertQuery('SELECT * FROM rt', $q);
 
         $q = $this->makeQ()->whereMulti('id', '=', '');
-        $this->assertQuery("SELECT * FROM rt", $q);
+        $this->assertQuery('SELECT * FROM rt', $q);
     }
 
     public function testWhereMultiIn()
     {
         $q = $this->q->whereMulti('tags', 'in', [1, 2, 3, [5, 6, 7]], [10, 11, 12]);
-        $this->assertQuery("SELECT * FROM rt WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)",
-            $q);
+        $this->assertQuery(
+            'SELECT * FROM rt WHERE tags in (1) AND tags in (2) AND tags in (3) AND tags in (5, 6, 7) AND tags in (10, 11, 12)',
+            $q
+        );
     }
-
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::option
@@ -300,12 +300,16 @@ class BuilderTest extends TestCase
         $this->assertQuery('select * from rt OPTION ranker = bm25,max_matches=3000', $q);
 
         $q->option('field_weights', '(title=10, body=3)');
-        $this->assertQuery('select * from rt OPTION ranker = bm25,max_matches=3000, field_weights=(title=10, body=3)',
-            $q);
+        $this->assertQuery(
+            'select * from rt OPTION ranker = bm25,max_matches=3000, field_weights=(title=10, body=3)',
+            $q
+        );
 
         $q->option('agent_query_timeout', '10000');
-        $this->assertQuery('select * from rt OPTION ranker = bm25,max_matches=3000, field_weights=(title=10, body=3) , agent_query_timeout=10000',
-            $q);
+        $this->assertQuery(
+            'select * from rt OPTION ranker = bm25,max_matches=3000, field_weights=(title=10, body=3) , agent_query_timeout=10000',
+            $q
+        );
         $q->get();
     }
 
@@ -336,7 +340,6 @@ class BuilderTest extends TestCase
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::withinGroupOrderBy
-     *
      */
     public function testWithinGroupOrderByException()
     {
@@ -350,6 +353,12 @@ class BuilderTest extends TestCase
      */
     public function testMatch()
     {
+        $q = $this->q->match(null);
+        $this->assertQuery("select * FROM rt WHERE MATCH('')", $q);
+
+        $q = $this->q->match('');
+        $this->assertQuery("select * FROM rt WHERE MATCH('')", $q);
+
         $q = $this->q->match('text match');
         $this->assertQuery("select * FROM rt WHERE MATCH('(@text match)')", $q);
 
@@ -359,12 +368,12 @@ class BuilderTest extends TestCase
         $q = $this->makeQ()->match(['name', 'content'], 'match');
         $this->assertQuery("select * FROM rt WHERE MATCH('(@(name,content) match)')", $q);
 
-        $q = $this->makeQ()->match(function(Match $m) {
+        $q = $this->makeQ()->match(function (Match $m) {
             $m->match('match');
         });
         $this->assertQuery("select * FROM rt WHERE MATCH('(match)')", $q);
 
-        $q = $this->makeQ()->match(function(Match $m) {
+        $q = $this->makeQ()->match(function (Match $m) {
             $m->field('name');
             $m->match('match');
         });
@@ -384,12 +393,12 @@ class BuilderTest extends TestCase
         });
         $this->assertInstanceOf(Facet::class, $mock->facet);
 
-        $this->assertQuery("select * FROM rt FACET id", $q->toSql());
+        $this->assertQuery('select * FROM rt FACET id', $q->toSql());
 
         $q->facet(function ($f) {
             $f->facet('name');
         });
-        $this->assertQuery("select * FROM rt FACET id FACET name", $q->toSql());
+        $this->assertQuery('select * FROM rt FACET id FACET name', $q->toSql());
     }
 
     /**
@@ -400,13 +409,13 @@ class BuilderTest extends TestCase
         $method = new \ReflectionMethod($this->q, 'filterParamsUint');
         $method->setAccessible(true);
 
-        $result = $method->invoke($this->q, [1,2,null,4]);
+        $result = $method->invoke($this->q, [1, 2, null, 4]);
         $this->assertEquals([1, 2, 4], $result);
 
-        $result = $method->invoke($this->q, [1,[2,[null,4]]]);
+        $result = $method->invoke($this->q, [1, [2, [null, 4]]]);
         $this->assertEquals([1, 2, 4], $result);
 
-        $result = $method->invoke($this->q, [null, 1,[2,[null,4]]]);
+        $result = $method->invoke($this->q, [null, 1, [2, [null, 4]]]);
         $this->assertEquals([1, 2, 4], $result);
 
         $result = $method->invoke($this->q, [[null, ''], 1, [2, [null, 4]]]);
@@ -415,5 +424,4 @@ class BuilderTest extends TestCase
         $result = $method->invoke($this->q, [null, null, [null, ''], 1, 2, 4]);
         $this->assertEquals([1, 2, 4], $result);
     }
-
 }

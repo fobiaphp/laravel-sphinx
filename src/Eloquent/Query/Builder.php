@@ -35,8 +35,11 @@ class Builder extends QueryBuilder
     ];
 
     public $grouporders;
+
     public $options;
+
     public $facets;
+
     public $match;
 
     /**
@@ -50,7 +53,7 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function runSelect()
     {
@@ -130,9 +133,8 @@ class Builder extends QueryBuilder
         return $this->connection->affectingStatement($sql, $bindings); //  insert($sql, $bindings);
     }
 
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update(array $values)
     {
@@ -143,7 +145,6 @@ class Builder extends QueryBuilder
             $this->grammar->prepareBindingsForUpdate($bindings, $values)
         ));
     }
-
 
     /**
      * Проверка списков MVA либо множественая проверка всех перечисленых значений
@@ -165,7 +166,7 @@ class Builder extends QueryBuilder
         if (is_string($operator) && in_array(strtolower($operator), ['in', 'not in', '=', '<', '>', '<=', '>=', '<>', '!='])) {
             //$values = array_slice(func_get_args(), 3);
         } else {
-            throw new \RuntimeException("Not defened operator");
+            throw new \RuntimeException('Not defened operator');
         }
 
         $operator = strtolower($operator);
@@ -217,7 +218,6 @@ class Builder extends QueryBuilder
      * 'field_weights'= (title=10, body=3), -    a named integer list (per-field user weights for ranking)
      * 'index_weights' = (products_rt=10, body=3),    - a named integer list (per-index user weights for ranking)
      *
-     *
      * @param string $name  Option name
      * @param string $value Option value
      *
@@ -234,15 +234,6 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @deprecated
-     */
-    public function options($name, $value)
-    {
-        return $this->option($name, $value);
-    }
-
-
-    /**
      * WITHIN GROUP ORDER BY clause (SphinxQL-specific)
      * Adds to the previously added columns
      * Works just like a classic ORDER BY
@@ -256,29 +247,28 @@ class Builder extends QueryBuilder
     {
         $direction = mb_strtoupper($direction);
         if ($direction != 'ASC' && $direction != 'DESC') {
-            throw new \RuntimeException("Undefined direction group (asc/desc) - " . $direction);
+            throw new \RuntimeException('Undefined direction group (asc/desc) - ' . $direction);
         }
         $this->grouporders[$column] = $direction;
         return $this;
     }
-
 
     /**
      * MATCH clause (Sphinx-specific)
      *
      * @param mixed $column The column name (can be array, string, Closure, or Match)
      * @param string $value The value
-     * @param boolean $half Exclude ", |, - control characters from being escaped
+     * @param bool $half Exclude ", |, - control characters from being escaped
      *
      * @return self
      */
     public function match($column, $value = null, $half = false)
     {
         if ($column === '*' || (is_array($column) && in_array('*', $column))) {
-            $column = array();
+            $column = [];
         }
 
-        $this->match[] = array('column' => $column, 'value' => $value, 'half' => $half);
+        $this->match[] = ['column' => $column, 'value' => $value, 'half' => $half];
 
         return $this;
     }
@@ -295,7 +285,7 @@ class Builder extends QueryBuilder
     {
         if (!$callback instanceof Facet) {
             if (!$callback instanceof \Closure) {
-                throw new \Exception("Not Facet");
+                throw new \Exception('Not Facet');
             }
             $facet = new Facet($this->getConnection()->getSphinxQLDriversConnection());
             $callback($facet);
@@ -307,7 +297,6 @@ class Builder extends QueryBuilder
 
         return $this;
     }
-
 
     /**
      * Масив преобразуется в список целых числе, null и пустые строки игнорятся
@@ -323,7 +312,7 @@ class Builder extends QueryBuilder
     {
         $args = Arr::flatten((array) $args);
         $args = array_filter((array) $args, function ($v) {
-            return (($v !== null) && ($v !== ''));
+            return ($v !== null) && ($v !== '');
         });
         if (!count($args)) {
             return false;

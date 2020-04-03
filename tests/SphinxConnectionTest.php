@@ -8,11 +8,9 @@
 
 namespace Fobia\Database\SphinxConnection\Test;
 
-
 use Fobia\Database\SphinxConnection\SphinxConnection;
-use Fobia\Database\SphinxConnection\SphinxQLDriversConnection;
+use Fobia\Database\SphinxConnection\SphinxQLDriverConnection;
 use Foolz\SphinxQL\Helper;
-use Illuminate\Database\Connection;
 
 class SphinxConnectionTest extends TestCase
 {
@@ -36,7 +34,7 @@ class SphinxConnectionTest extends TestCase
     public function test_getSphinxQLDriversConnection()
     {
         $sphinxQl = $this->db->getSphinxQLDriversConnection();
-        $this->assertInstanceOf(SphinxQLDriversConnection::class, $sphinxQl);
+        $this->assertInstanceOf(SphinxQLDriverConnection::class, $sphinxQl);
     }
 
     public function test_getSphinxQLDriversConnection_singleton()
@@ -48,11 +46,9 @@ class SphinxConnectionTest extends TestCase
         $this->assertTrue($sphinxQl1 === $sphinxQl2);
     }
 
-
     public function test_getSphinxQLHelper()
     {
         $helper = $this->db->getSphinxQLHelper();
         $this->assertInstanceOf(Helper::class, $helper);
     }
-
 }

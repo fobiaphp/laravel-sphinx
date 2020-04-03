@@ -12,13 +12,14 @@
         "illuminate/bus": "^6.0|^7.0",
         "illuminate/database": "^6.0|^7.0",
         "illuminate/support": "^6.0|^7.0",
+        "laravel/scout": "^7.0|^8.0",
         "symfony/filesystem": "^4.0|^5.0",
         "orchestra/testbench": "^4.0|^5.0",
         "phpunit/phpunit": "^8.5"
     },
     "suggest": {
         "laravel/framework": "The Laravel Framework",
-        "prettus/l5-repository": "Repositories to  the database layer"
+        "laravel/scout": "The Laravel scout"
     },
     "autoload": {
         "psr-4": {

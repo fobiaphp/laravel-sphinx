@@ -24,13 +24,13 @@ class BuilderTest extends TestCase
             ['id' => 5],
         ]);
     }
+
     //
     //public function tearDown()
     //{
     //    $this->db->statement("TRUNCATE RTINDEX rt");
     //    parent::tearDown();
     //}
-
 
     /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Builder::paginate

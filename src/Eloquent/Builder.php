@@ -42,7 +42,7 @@ class Builder extends EloquentBuilder
      */
     public function getCountForPagination($columns = ['*'])
     {
-        $results = $this->getQuery()->getConnection()->select("SHOW META");
+        $results = $this->getQuery()->getConnection()->select('SHOW META');
         // mysql> SHOW META;
         // +---------------+-------+
         // | Variable_name | Value |

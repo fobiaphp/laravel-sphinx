@@ -3,8 +3,8 @@
 namespace Fobia\Database\SphinxConnection\Test;
 
 use Fobia\Database\SphinxConnection\SphinxConnection;
-use Symfony\Component\Filesystem\Filesystem;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Symfony\Component\Filesystem\Filesystem;
 
 abstract class TestCase extends Orchestra
 {
@@ -30,10 +30,9 @@ abstract class TestCase extends Orchestra
     public function traceLog($log)
     {
         if ($this->traceLog) {
-            echo ">> DB Query:: " . $log . PHP_EOL;
+            echo '>> DB Query:: ' . $log . PHP_EOL;
         }
     }
-
 
     protected function getQuery()
     {
@@ -61,10 +60,16 @@ abstract class TestCase extends Orchestra
         // $expectedQuery = preg_replace('/\s+/', ' ', $expectedQuery);
         // $actualQuery = preg_replace('/\s+/', ' ', $actualQuery);
 
-        $expectedQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
-            [' ', ', ', ' ', ' = ', ''], $expectedQuery);
-        $actualQuery = preg_replace(['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
-            [' ', ', ', ' ', ' = ', ''], $actualQuery);
+        $expectedQuery = preg_replace(
+            ['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
+            [' ', ', ', ' ', ' = ', ''],
+            $expectedQuery
+        );
+        $actualQuery = preg_replace(
+            ['/\n/', '/\s*,\s*/', '/\s+/', '/\s*=\s*/', '/(?<=\()\s+|\s+(?=\))/'],
+            [' ', ', ', ' ', ' = ', ''],
+            $actualQuery
+        );
 
         $this->assertEquals($expectedQuery, $actualQuery);
     }
@@ -116,9 +121,9 @@ abstract class TestCase extends Orchestra
             'database' => null, // 'SphinxRT',
             'username' => '',
             // 'password' => '',
-            'charset' => 'utf8',
-            'prefix' => '',
-            'collation' => null,
+            // 'charset' => 'utf8',
+            // 'prefix' => '',
+            // 'collation' => null,
         ]);
 
         $app->bind('path.public', function () {
@@ -145,7 +150,7 @@ abstract class TestCase extends Orchestra
         try {
             $this->db->reconnect();
         } catch (\Exception $e) {
-            $this->db =  $app['db']->connection('sphinx');
+            $this->db = $app['db']->connection('sphinx');
         }
 
         $this->db->enableQueryLog();

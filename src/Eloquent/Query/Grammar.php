@@ -10,8 +10,8 @@ namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
 use Foolz\SphinxQL\Facet;
 use Foolz\SphinxQL\Match;
-use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 use Illuminate\Database\Query\Builder as BaseBuilder;
+use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 
 /**
  * Class Grammar
@@ -37,7 +37,7 @@ class Grammar extends BaseGrammar
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function compileSelect(BaseBuilder $query)
     {
@@ -54,7 +54,7 @@ class Grammar extends BaseGrammar
         foreach ($groups as $k => $v) {
             $sql[] = $k . ' ' . $v;
         }
-        return 'WITHIN GROUP ORDER BY ' . implode(", ", $sql);
+        return 'WITHIN GROUP ORDER BY ' . implode(', ', $sql);
     }
 
     protected function compileOptions(BaseBuilder $query, $options = null)
@@ -73,9 +73,9 @@ class Grammar extends BaseGrammar
                             $weights[] = "{$k} = " . (int) $v;
                         }
                     } else {
-                        $weights[] = preg_replace("/\(|\)/", "", $opt_val);
+                        $weights[] = preg_replace("/\(|\)/", '', $opt_val);
                     }
-                    $opt_val = "(" . implode(", ", $weights) . ")";
+                    $opt_val = '(' . implode(', ', $weights) . ')';
                 }
 
                 if ($opt == 'comment') {
@@ -104,7 +104,7 @@ class Grammar extends BaseGrammar
         if (!empty($facets)) {
             foreach ($facets as $facet) {
                 if (!$facet instanceof Facet) {
-                    throw new \Exception("Not Facet");
+                    throw new \Exception('Not Facet');
                 }
                 // dynamically set the own SphinxQL connection if the Facet doesn't own one
                 //if ($facet->getConnection() === null) {
@@ -113,7 +113,7 @@ class Grammar extends BaseGrammar
                 //    // go back to the status quo for reuse
                 //    $facet->setConnection();
                 //} else {
-                    $sql[] = $facet->getFacet();
+                $sql[] = $facet->getFacet();
                 //}
                 //$facet = "FACET " .
             }
@@ -166,7 +166,7 @@ class Grammar extends BaseGrammar
     protected function compileFrom(BaseBuilder $query, $table)
     {
         if (is_array($table)) {
-            return 'FROM ' . implode(", ", $table);
+            return 'FROM ' . implode(', ', $table);
         }
         return 'FROM ' . $this->wrapTable($table);
     }
@@ -185,7 +185,7 @@ class Grammar extends BaseGrammar
         $query = '';
 
         if (!empty($matchs)) {
-            $matched = array();
+            $matched = [];
 
             foreach ($matchs as $match) {
                 $pre = '';
@@ -200,6 +200,9 @@ class Grammar extends BaseGrammar
                 } elseif (is_array($match['column'])) {
                     $pre .= '@(' . implode(',', $match['column']) . ') ';
                 } else {
+                    if (is_numeric($match['column'])) {
+                        $match['column'] = '"' . $match['column'] . '"';
+                    }
                     $pre .= '@' . $match['column'] . ' ';
                 }
 
@@ -208,8 +211,9 @@ class Grammar extends BaseGrammar
                 } else {
                     $pre .= $sphinxQL->escapeMatch($match['value']);
                 }
-
-                $matched[] = '(' . $pre . ')';
+                if ($pre) {
+                    $matched[] = '(' . $pre . ')';
+                }
             }
 
             $matched = implode(' ', $matched);
@@ -218,7 +222,6 @@ class Grammar extends BaseGrammar
 
         return $query;
     }
-
 
     public function compileWheres(BaseBuilder $query)
     {
@@ -243,7 +246,7 @@ class Grammar extends BaseGrammar
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function wrap($value, $prefixAlias = false)
     {
@@ -322,6 +325,7 @@ class Grammar extends BaseGrammar
         if ($value === '*') {
             return $value;
         }
+
         try {
             return \DB::connection('sphinx')->getPdo()->quote($value);
         } catch (\Exception $e) {

@@ -34,7 +34,9 @@ class Model extends \Illuminate\Database\Eloquent\Model
     protected $connection = 'sphinx';
 
     protected $perPage = 15;
+
     public $timestamps = false;
+
     public $incrementing = false;
 
     /*
@@ -59,7 +61,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     {
         $args = Arr::flatten((array) $args);
         $args = array_filter((array) $args, function ($v) {
-            return (($v !== null) && ($v !== ''));
+            return ($v !== null) && ($v !== '');
         });
         if (!count($args)) {
             return false;
@@ -116,7 +118,6 @@ class Model extends \Illuminate\Database\Eloquent\Model
         }
     }
 
-
     /**
      * Get a new query builder that doesn't have any global scopes.
      *
@@ -147,7 +148,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     protected function newBaseQueryBuilder()
     {
         $conn = $this->getConnection();
-        $grammar = new QueryGrammar;
+        $grammar = new QueryGrammar();
 
         return new QueryBuilder($conn, $grammar, $conn->getPostProcessor());
     }
