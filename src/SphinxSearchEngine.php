@@ -5,15 +5,16 @@
 
 namespace Fobia\Database\SphinxConnection;
 
+use Fobia\Database\SphinxConnection\Eloquent;
 use Foolz\SphinxQL\Exception\ConnectionException;
 use Foolz\SphinxQL\Exception\DatabaseException;
 use Foolz\SphinxQL\Match;
 use Foolz\SphinxQL\SphinxQL;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Engines\Engine;
-use Illuminate\Support\Arr;
 
 /**
  * Class SphinxSearchEngine
@@ -23,7 +24,7 @@ class SphinxSearchEngine extends Engine
     /**
      * A non-static connection for the current Facet object
      *
-     * @var SphinxConnection
+     * @var \Fobia\Database\SphinxConnection\SphinxConnection
      */
     protected $connection;
 
@@ -31,6 +32,7 @@ class SphinxSearchEngine extends Engine
     {
         $this->connection = $connection;
     }
+
     /**
      * @return SphinxConnection
      */
@@ -40,7 +42,7 @@ class SphinxSearchEngine extends Engine
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function update($models)
     {
@@ -58,7 +60,7 @@ class SphinxSearchEngine extends Engine
         $items = collect();
 
         while (!$models->isEmpty()) {
-            $model = $models->shift();
+            $model = $models->pop();
 
             $array = $model->toSearchableArray();
             $softDeleted = Arr::get($model->scoutMetadata(), '__soft_deleted', null);
@@ -69,9 +71,9 @@ class SphinxSearchEngine extends Engine
             // Первичный ключ id для Sphinx
             $array = array_merge($array, ['id' => $model->getScoutKey()]);
 
-            $array = array_filter($array, function ($val) {
-                return !is_null($val);
-            });
+            // $array = array_filter($array, function ($val) {
+            //     return !is_null($val);
+            // });
 
             $items->add($array);
 
@@ -99,7 +101,9 @@ class SphinxSearchEngine extends Engine
             return $model->getScoutKey();
         })->toArray();
 
-        $this->connection->query()->from($table)->delete($ids);
+        $this->connection->query()->from($table)
+            ->whereIn('id', $ids)
+            ->delete();
     }
 
     public function search(Builder $builder)
@@ -114,56 +118,67 @@ class SphinxSearchEngine extends Engine
 
         $offset = ($page - 1) * $perPage;
 
-        return $this->executeQuery($query, $builder, $offset, $perPage);
+        return $this->executeQuery($query, $builder, $offset, $perPage, true);
     }
 
     public function mapIds($results)
     {
+        if ($results instanceof Result) {
+            $results = $results->result;
+        }
         return collect($results)->only('id');
     }
 
+    /**
+     * @param  \Laravel\Scout\Builder  $builder
+     * @param  \Fobia\Database\SphinxConnection\Result  $results
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function map(Builder $builder, $results, $model)
     {
-        /** @var \Solarium\QueryType\Select\Result\Result $results */
-        if (count($results->getDocuments()) === 0) {
+        $results = $results->result;
+
+        /** @var \Illuminate\Support\Collection $results */
+        /** @var \Illuminate\Database\Eloquent\Model $model */
+        if ($results->count() === 0) {
             return Collection::make();
         }
-        $docs = Collection::make($results->getDocuments());
 
         $models = $model->getScoutModelsByIds(
             $builder,
-            $docs->pluck('id')->values()->all()
+            // $results->pluck('id')->values()->toArray()
+
+            $results->map(function ($hot) {
+                return (int) (($hot->id - $hot->content_type) / 10);
+            })->values()->toArray()
         )->keyBy(function ($model) {
             return $model->getScoutKey();
         });
 
-        return $docs->map(function ($hit) use ($models) {
-            if (isset($models[$hit['id']])) {
-                return $models[$hit['id']];
+        $items = $results->map(function ($hit) use ($models) {
+            if (isset($models[$hit->id])) {
+                return $models[$hit->id];
             }
         })->filter()->values();
 
-        // $models->each(function ($model) use ($docs) {
-        //     /** @var \Illuminate\Database\Eloquent\Model $model */
-        //     $solrDock = $docs->firstWhere('id', '=', $model->getScoutKey());
-        //     $model->setRelation('solr', new Fluent($solrDock));
-        // });
-        //
-        // return $models;
+        return Collection::make($items);
     }
 
     public function getTotalCount($results)
     {
-        // TODO: Implement getTotalCount() method.
+        /** @var \Fobia\Database\SphinxConnection\Result $results */
+        return (int) $results->total;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function flush($model)
     {
         $table = $model->searchableAs();
-        $this->connection->select('TRUNCATE TABLE ' . $table);
+        $this->connection->select('TRUNCATE RTINDEX ' . $table);
     }
 
     // =========================================
@@ -203,9 +218,10 @@ class SphinxSearchEngine extends Engine
      * @param \Laravel\Scout\Builder $builder
      * @param int $offset
      * @param int $limit
-     * @return \Solarium\QueryType\Select\Result\Result
+     * @param  bool  $total
+     * @return \Fobia\Database\SphinxConnection\Result
      */
-    protected function executeQuery(Eloquent\Query\Builder $query, Builder $builder, $offset = 0, $limit = null)
+    protected function executeQuery(Eloquent\Query\Builder $query, Builder $builder, $offset = 0, $limit = null, $total = false)
     {
         $table = $builder->index ?: $builder->model->searchableAs();
         $query->from($table);
@@ -225,8 +241,8 @@ class SphinxSearchEngine extends Engine
                 $query->match($searchQuery);
             } elseif ($searchQuery instanceof \Illuminate\Database\Query\Expression) {
                 $query->match($searchQuery->getValue());
-            // } elseif ($searchQuery instanceof \Minimalcode\Search\Criteria) {
-            //     $searchQuery = $searchQuery->getQuery();
+                // } elseif ($searchQuery instanceof \Minimalcode\Search\Criteria) {
+                //     $searchQuery = $searchQuery->getQuery();
             } else {
                 if ($searchQuery && is_string($searchQuery)) {
                     $query->match('*', $searchQuery);
@@ -235,7 +251,7 @@ class SphinxSearchEngine extends Engine
         }
 
         // $specChar = ['+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '/', '\\', ];
-
+        // !    "    $    '    (    )    -    /    <    @    \    ^    |    ~
         foreach ($builder->wheres as $key => $value) {
             if ($value instanceof \Illuminate\Database\Query\Expression) {
                 $query->where($key, $value->__toString());
@@ -261,7 +277,25 @@ class SphinxSearchEngine extends Engine
             }
         }
 
-        return $query->get();
+        if (method_exists($builder->model, 'getSearchFieldWeights')) {
+            $fieldWeights = $builder->model->getSearchFieldWeights();
+
+            $value = collect($fieldWeights)->map(function ($weight, $field) {
+                return sprintf('%s=%d', $field, $weight);
+            })->join(', ');
+
+            $query->option('field_weights', $value);
+        }
+
+        $result = new Result($query->get());
+
+        if ($total) {
+            $res = $query->getConnection()->select('SHOW META');
+            $total = isset($res[1]) ? (int) array_change_key_case((array) $res[1])['value'] : 0;
+        }
+        $result->total = $total;
+
+        return $result;
     }
 
     /**

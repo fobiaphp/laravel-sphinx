@@ -29,14 +29,9 @@ class SphinxServiceProvider extends ServiceProvider
         if (class_exists(EngineManager::class)) {
             resolve(EngineManager::class)->extend('sphinx', function () {
                 $db = app('db')->connection('sphinx');
-                return new SphinxSearchEngine($db);
-            });
-
-            Builder::macro('whereValue', function ($a = null, $b = null) {
-                return 11;
-                return $this->engine->getTotalCount(
-                    $this->engine()->search($this)
-                );
+                $sphinxSearchEngine = new SphinxSearchEngine($db);
+                $db->setDatabaseName('sphinx');
+                return $sphinxSearchEngine;
             });
         }
     }
