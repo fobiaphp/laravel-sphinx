@@ -381,16 +381,6 @@ class BuilderTest extends TestCase
     }
 
     /**
-     * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::match
-     */
-    public function testMatch2()
-    {
-        $q = $this->q->match(1);
-        $sql = $q->toSql();
-        $this->assertQuery("select * FROM rt WHERE MATCH('')", $q);
-    }
-
-    /**
      * @covers \Fobia\Database\SphinxConnection\Eloquent\Query\Builder::facet
      */
     public function testFacet()
