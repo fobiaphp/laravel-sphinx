@@ -29,7 +29,7 @@ class SphinxConnector extends MySqlConnector
             'database' => '', // null,
             'username' => '',
             // 'password' => '',
-            'charset' => 'utf8',
+            // 'charset' => 'utf8',
             'prefix' => '',
             'collation' => null,
         ];
@@ -37,5 +37,13 @@ class SphinxConnector extends MySqlConnector
         $config = array_merge($defaultConfig, $config);
 
         return parent::connect($config);
+    }
+
+    protected function configureEncoding($connection, array $config)
+    {
+        if (empty($config['charset'])) {
+            return $connection;
+        }
+        return parent::configureEncoding($connection, $config);
     }
 }
