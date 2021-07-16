@@ -9,7 +9,7 @@
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
 use Foolz\SphinxQL\Facet;
-use Foolz\SphinxQL\Match;
+use Foolz\SphinxQL\MatchBuilder as Match;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 
