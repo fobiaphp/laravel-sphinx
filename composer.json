@@ -1,5 +1,5 @@
 {
-    "name": "fobia/laravel-sphinx",
+    "name": "tjslash/laravel-sphinx",
     "description": "A Laravel query builder for SphinxQL",
     "keywords": ["laravel", "database", "sphinxql", "sphinx", "SQL", "query builder", "sphinx eloquent"],
     "license": "MIT",
