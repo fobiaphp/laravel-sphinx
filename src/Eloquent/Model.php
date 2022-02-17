@@ -104,6 +104,17 @@ class Model extends \Illuminate\Database\Eloquent\Model
      * ===================
      */
 
+    public function setAttribute($key, $value)
+    {
+        if (array_key_exists($key, (array) $this->casts) && $this->getCastType($key) == 'mva') {
+            $value = $this->asMva($value);
+            $this->attributes[$key] = $value;
+            return $this;
+        }
+
+        parent::setAttribute($key, $value);
+    }
+
     protected function castAttribute($key, $value)
     {
         if (is_null($value)) {
@@ -112,9 +123,12 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
         switch ($this->getCastType($key)) {
             case 'mva':
+                //dd($this->asMva($value));
                 return $this->asMva($value);
+                break;
             default:
                 return parent::castAttribute($key, $value);
+                break;
         }
     }
 

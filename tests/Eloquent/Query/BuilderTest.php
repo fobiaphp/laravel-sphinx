@@ -5,7 +5,7 @@ namespace Fobia\Database\SphinxConnection\Test\Eloquent\Query;
 use Fobia\Database\SphinxConnection\Eloquent\Query\Builder;
 use Fobia\Database\SphinxConnection\Test\TestCase;
 use Foolz\SphinxQL\Facet;
-use Foolz\SphinxQL\Match;
+use Foolz\SphinxQL\MatchBuilder;
 
 class BuilderTest extends TestCase
 {
@@ -368,12 +368,12 @@ class BuilderTest extends TestCase
         $q = $this->makeQ()->match(['name', 'content'], 'match');
         $this->assertQuery("select * FROM rt WHERE MATCH('(@(name,content) match)')", $q);
 
-        $q = $this->makeQ()->match(function (Match $m) {
+        $q = $this->makeQ()->match(function (MatchBuilder $m) {
             $m->match('match');
         });
         $this->assertQuery("select * FROM rt WHERE MATCH('(match)')", $q);
 
-        $q = $this->makeQ()->match(function (Match $m) {
+        $q = $this->makeQ()->match(function (MatchBuilder $m) {
             $m->field('name');
             $m->match('match');
         });
