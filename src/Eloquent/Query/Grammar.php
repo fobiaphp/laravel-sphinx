@@ -9,7 +9,7 @@
 namespace Fobia\Database\SphinxConnection\Eloquent\Query;
 
 use Foolz\SphinxQL\Facet;
-use Foolz\SphinxQL\MatchBuilder;
+use Foolz\SphinxQL\Match;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 
@@ -190,10 +190,10 @@ class Grammar extends BaseGrammar
             foreach ($matchs as $match) {
                 $pre = '';
                 if ($match['column'] instanceof \Closure) {
-                    $sub = new MatchBuilder($sphinxQL);
+                    $sub = new Match($sphinxQL);
                     call_user_func($match['column'], $sub);
                     $pre .= $sub->compile()->getCompiled();
-                } elseif ($match['column'] instanceof MatchBuilder) {
+                } elseif ($match['column'] instanceof Match) {
                     $pre .= $match['column']->compile()->getCompiled();
                 } elseif (empty($match['column'])) {
                     $pre .= '';
